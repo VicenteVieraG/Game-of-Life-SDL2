@@ -1,0 +1,1 @@
+add_library(${CELL} STATIC Cell.cpp)

@@ -1,0 +1,1 @@
+add_library(${GRID} STATIC Grid.cpp)

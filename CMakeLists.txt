@@ -1,15 +1,14 @@
-cmake_minimum_required(VERSION 3.24.1)
+cmake_minimum_required(VERSION 3.29.6)
 
-project(MY_PROJECT VERSION 0.0.0 LANGUAGES C CXX)
+project(MY_PROJECT VERSION 0.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Compiler paths and executable output folder declaration
-set(CMAKE_C_COMPILER C:\\mingw64\\bin\\clang)
-set(CMAKE_CXX_COMPILER C:\\mingw64\\bin\\clang++)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}\\bin)
+
+set(GAME game)
 
 # Subdirectories
 add_subdirectory(config)

@@ -1,10 +1,18 @@
 #include <iostream>
 #include <stdio.h>
+#include <vector>
+#include <chrono>
+#include <thread>
 #include <SDL2/SDL.h>
 
+#include <Cell.h>
+#include <Grid.h>
 #include <Game.h>
 
+using namespace std::literals::chrono_literals;
+
 Game::Game(){
+    // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cerr<<"-- Error initializing SDL"<<std::endl;
         std::cout<<"-- SDL Error: "<<SDL_GetError()<<std::endl;
@@ -43,7 +51,16 @@ Game::Game(){
         std::exit(-1);
     }
 
+    this->grid = Grid(5, 6);
+    this->grid.printGrid();
+    std::cout<<"-------------------------------------------"<<std::endl;
+    this->grid.printStatus();
+
+    // Initialize Game attributes
     this->shouldStop = SDL_FALSE;
+    this->population = 0;
+    this->generation = 0;
+    this->liveCells = std::vector<Cell>();
 }
 
 void Game::start(){
@@ -61,6 +78,9 @@ void Game::start(){
         SDL_SetRenderDrawColor(this->Renderer, 255, 255, 255, 255);
         SDL_RenderClear(this->Renderer);
 
+        // Debug
+        std::system("cls");
+        std::this_thread::sleep_for(3s);
         SDL_RenderPresent(this->Renderer);
     }while(!this->shouldStop);
 

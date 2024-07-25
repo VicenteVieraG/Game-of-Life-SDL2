@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <vector>
+#include <memory>
 #include <Cell.h>
 
 /*
@@ -16,19 +17,23 @@ class Grid {
     public:
         Grid() = default;
         Grid(unsigned int cols, unsigned int rows);
+
         unsigned int cols;
         unsigned int rows;
+
         Cell minBound;
         Cell maxBound;
+
         std::vector<std::vector<Cell>> grid;
         std::pair<Cell, Cell> boundingBox;
 
-        /*
-            @brief Counts neighboring live cells
-        */
-        unsigned int countNeighbors(const Cell& cell) const;
         void printGrid() const;
         void printStatus() const;
+
+        Cell& at(const Coord coord);
+        const Cell& at(const Coord coord) const;
+        void setState(const State state, const Coord coord);
+        unsigned int countNeighbors(const Cell& cell) const;
 };
 
 #endif

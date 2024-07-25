@@ -51,6 +51,7 @@ Game::Game(){
         std::exit(-1);
     }
 
+    std::cout<<"-- Debug grids"<<std::endl;
     this->grid = Grid(5, 6);
     this->grid.printGrid();
     std::cout<<"-------------------------------------------"<<std::endl;

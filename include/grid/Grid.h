@@ -33,7 +33,7 @@ class Grid {
         Cell& at(const Coord coord);
         const Cell& at(const Coord coord) const;
         void setState(const State state, const Coord coord);
-        unsigned int countNeighbors(const Cell& cell) const;
+        unsigned int countAliveNeighbors(Cell& cell);
 };
 
 #endif

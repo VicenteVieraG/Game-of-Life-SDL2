@@ -53,9 +53,15 @@ Game::Game(){
 
     std::cout<<"-- Debug grids"<<std::endl;
     this->grid = Grid(5, 6);
+    this->grid.at({0, 0}).state = ALIVE;
+    this->grid.at({1, 0}).state = ALIVE;
+    this->grid.at({1, 1}).state = ALIVE;
+    this->grid.at({0, 1}).state = ALIVE;
     this->grid.printGrid();
     std::cout<<"-------------------------------------------"<<std::endl;
     this->grid.printStatus();
+    std::cout<<
+    this->grid.countAliveNeighbors(this->grid.at({1,1}))<<std::endl;
 
     // Initialize Game attributes
     this->shouldStop = SDL_FALSE;

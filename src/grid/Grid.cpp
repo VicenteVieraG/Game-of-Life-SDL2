@@ -7,20 +7,18 @@
 
 Grid::Grid(unsigned int cols, unsigned int rows) : cols(cols), rows(rows), grid(rows, std::vector<Cell>(cols)){
     for(unsigned int i = 0;i < this->grid.size();i++){
-        for(unsigned int j = 0;j < this->grid[i].size();j++) this->grid[i][j].coord = {i, j};
+        for(unsigned int j = 0;j < this->grid[i].size();j++) this->grid[i][j].coord = {(int)i, (int)j};
     }
 }
 
 Cell& Grid::at(const Coord coord){
     if(coord.x >= this->cols || coord.y >= this->rows ) throw std::out_of_range("-- Out of range grid's coord access D:");
-
-    return this->grid[coord.x][coord.y];
+    return this->grid[coord.y][coord.x];
 }
 
 const Cell& Grid::at(const Coord coord) const {
     if(coord.x >= this->cols || coord.y >= this->rows) throw std::out_of_range("-- Out of range grid's coord access D:");
-
-    return this->grid[coord.x][coord.y];
+    return this->grid[coord.y][coord.x];
 }
 
 void Grid::setState(const State state, const Coord coord){
@@ -40,9 +38,19 @@ void Grid::setState(const State state, const Coord coord){
     }
 }
 
-unsigned int Grid::countNeighbors(const Cell& cell) const{
-    // Count neighbors implementation (pending)
-    return 0;
+unsigned int Grid::countAliveNeighbors(Cell& cell){
+    // Directions to lookup for alive neighbors
+    const Coord directions[8] = {RIGHT, LEFT, TOP, BOTTOM, TOPRIGHT, TOPLEFT, BOTTOMRIGHT, BOTTOMLEFT};
+
+    for(const Coord& direction : directions){
+        const Coord neighborCoord = cell.coord + direction;
+        if(neighborCoord.x >= 0 && neighborCoord.y >= 0 &&
+           neighborCoord.x < this->cols - 1 && neighborCoord.y < this->rows){
+            if(this->at(neighborCoord).state) cell.neighbors++;
+        }
+    }
+
+    return cell.neighbors;
 }
 
 void Grid::printGrid() const{

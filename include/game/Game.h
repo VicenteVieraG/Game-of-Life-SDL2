@@ -21,6 +21,7 @@ class Game {
     public:
         Game();
         void start();
+        ~Game() = default;
 };
 
 #endif

@@ -29,6 +29,7 @@ class Grid {
 
         void printGrid() const;
         void printStatus() const;
+        void printNeighbors() const;
 
         Cell& at(const Coord coord);
         const Cell& at(const Coord coord) const;

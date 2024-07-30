@@ -51,23 +51,40 @@ Game::Game(){
         std::exit(-1);
     }
 
-    std::cout<<"-- Debug grids"<<std::endl;
-    this->grid = Grid(5, 6);
-    this->grid.at({0, 0}).state = ALIVE;
-    this->grid.at({1, 0}).state = ALIVE;
-    this->grid.at({1, 1}).state = ALIVE;
-    this->grid.at({0, 1}).state = ALIVE;
-    this->grid.printGrid();
-    std::cout<<"-------------------------------------------"<<std::endl;
-    this->grid.printStatus();
-    std::cout<<
-    this->grid.countAliveNeighbors(this->grid.at({1,1}))<<std::endl;
+    this->grid = Grid(80, 100);
+    this->grid.at({40, 40}).state = ALIVE;
+    this->grid.at({41, 40}).state = ALIVE;
+    this->grid.at({41, 41}).state = ALIVE;
+    this->grid.at({42, 41}).state = ALIVE;
+    this->grid.at({41, 42}).state = ALIVE;
 
     // Initialize Game attributes
     this->shouldStop = SDL_FALSE;
     this->population = 0;
     this->generation = 0;
     this->liveCells = std::vector<Cell>();
+}
+
+// Complexity: O()
+void Game::computeState(){
+    Grid isoGrid = this->grid;
+    isoGrid.printStatus();
+
+    // Compute isoGrid from the current grid for next iteration
+    for(const std::vector<Cell>& col : isoGrid.grid){
+        for(Cell cell : col){
+            isoGrid.at(cell.coord).neighbors = this->grid.countAliveNeighbors(this->grid.at(cell.coord));
+            isoGrid.at(cell.coord).setCurrentState();
+        }
+    }
+    
+    // Reset neighbor count
+    for(const std::vector<Cell>& col : isoGrid.grid){
+        for(Cell cell : col) isoGrid.at(cell.coord).neighbors = 0;
+    }
+
+    this->grid = isoGrid;
+    return;
 }
 
 void Game::start(){
@@ -86,8 +103,10 @@ void Game::start(){
         SDL_RenderClear(this->Renderer);
 
         // Debug
-        std::system("cls");
+        // this->grid.printStatus();
+        this->computeState();
         std::this_thread::sleep_for(3s);
+        // std::system("cls");
         SDL_RenderPresent(this->Renderer);
     }while(!this->shouldStop);
 
@@ -97,4 +116,9 @@ void Game::start(){
 
     SDL_Quit();
     return;
+}
+
+Game::~Game(){
+    SDL_DestroyRenderer(this->Renderer);
+    SDL_DestroyWindow(this->Window);
 }

@@ -9,7 +9,7 @@ int main(int argc, char** argv){
     std::cout<<project_version<<std::endl;
 
     Game Life;
-    // Life.start();
+    Life.start();
 
     return 0;
 }

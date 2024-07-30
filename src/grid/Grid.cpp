@@ -7,17 +7,17 @@
 
 Grid::Grid(unsigned int cols, unsigned int rows) : cols(cols), rows(rows), grid(rows, std::vector<Cell>(cols)){
     for(unsigned int i = 0;i < this->grid.size();i++){
-        for(unsigned int j = 0;j < this->grid[i].size();j++) this->grid[i][j].coord = {(int)i, (int)j};
+        for(unsigned int j = 0;j < this->grid[i].size();j++) this->grid[i][j].coord = {(int)j, (int)i};
     }
 }
 
 Cell& Grid::at(const Coord coord){
-    if(coord.x >= this->cols || coord.y >= this->rows ) throw std::out_of_range("-- Out of range grid's coord access D:");
+    if(coord.x >= this->cols || coord.y >= this->rows ) throw std::out_of_range("-- Out of range grid's coord access at Cell& Grid::at D:");
     return this->grid[coord.y][coord.x];
 }
 
 const Cell& Grid::at(const Coord coord) const {
-    if(coord.x >= this->cols || coord.y >= this->rows) throw std::out_of_range("-- Out of range grid's coord access D:");
+    if(coord.x >= this->cols || coord.y >= this->rows) throw std::out_of_range("-- Out of range grid's coord access at cosnt Cell& Grid::at const D:");
     return this->grid[coord.y][coord.x];
 }
 
@@ -80,8 +80,17 @@ void Grid::printStatus() const{
 
     for(const std::vector<Cell>& row : this->grid){
         std::cout<<"| ";
-        for(const Cell& cell : row){
-            std::cout<<cell.state<<" ";
+        for(const Cell& cell : row) cell.state ? std::cout<<"| " : std::cout<<". ";
+        std::cout<<"|"<<std::endl;
+    }
+}
+
+void Grid::printNeighbors() const{
+    std::cout<<"-- Neighbors print"<<std::endl;
+    for(const std::vector<Cell>& col : this->grid){
+        std::cout<<"| ";
+        for(const Cell& cell : col){
+            std::cout<<cell.neighbors<<" ";
         }
         std::cout<<"|"<<std::endl;
     }

@@ -20,8 +20,10 @@ class Game {
         std::vector<Cell> liveCells;
     public:
         Game();
+        ~Game();
+        
+        void computeState();
         void start();
-        ~Game() = default;
 };
 
 #endif

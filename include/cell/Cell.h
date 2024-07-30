@@ -36,6 +36,7 @@ class Cell {
         State state;
         Coord coord;
         unsigned int neighbors;
+        void setCurrentState();
 };
 
 #endif

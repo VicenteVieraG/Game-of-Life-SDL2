@@ -4,6 +4,7 @@
 #include <iostream>
 #include <compare>
 
+// Directions unit vectors for Coords
 #define RIGHT {1, 0}
 #define LEFT {-1, 0}
 #define BOTTOM {0, 1}
@@ -32,11 +33,14 @@ struct Coord {
 class Cell {
     public:
         Cell() = default;
-        Cell(State state, Coord coord, int neighbors) : state(state), coord(coord), neighbors(neighbors){};
+        Cell(State state, Coord coord) : state(state), coord(coord){this->neighbors = 0;};
+        ~Cell() = default;
+
         State state;
         Coord coord;
         unsigned int neighbors;
-        void setCurrentState();
+
+        void setNewState();
 };
 
 #endif

@@ -1,26 +1,29 @@
 #include <iostream>
-#include <exception>
+#include <string>
 #include <vector>
+#include <exception>
 
 #include <Cell.h>
 #include <Grid.h>
 
 Grid::Grid(unsigned int cols, unsigned int rows) : cols(cols), rows(rows), grid(rows, std::vector<Cell>(cols)){
+    // Initialize Cell's coords
     for(unsigned int i = 0;i < this->grid.size();i++){
         for(unsigned int j = 0;j < this->grid[i].size();j++) this->grid[i][j].coord = {(int)j, (int)i};
     }
 }
 
+// Retrieves the Grid's Cell at the given Coord
 Cell& Grid::at(const Coord coord){
     if(coord.x >= this->cols || coord.y >= this->rows ) throw std::out_of_range("-- Out of range grid's coord access at Cell& Grid::at D:");
     return this->grid[coord.y][coord.x];
 }
-
 const Cell& Grid::at(const Coord coord) const {
     if(coord.x >= this->cols || coord.y >= this->rows) throw std::out_of_range("-- Out of range grid's coord access at cosnt Cell& Grid::at const D:");
     return this->grid[coord.y][coord.x];
 }
 
+// @deprecated
 void Grid::setState(const State state, const Coord coord){
     try{
         if(this->grid.empty()) throw std::runtime_error("-- Can not set state of an empty grid D:");
@@ -41,10 +44,12 @@ void Grid::setState(const State state, const Coord coord){
 unsigned int Grid::countAliveNeighbors(Cell& cell){
     // Directions to lookup for alive neighbors
     const Coord directions[8] = {RIGHT, LEFT, TOP, BOTTOM, TOPRIGHT, TOPLEFT, BOTTOMRIGHT, BOTTOMLEFT};
+    // This Null coord is wrong. It misses the case for {-1, 0} and {0, -1}
+    const Coord NULL_COORD = {-1, -1};
 
     for(const Coord& direction : directions){
         const Coord neighborCoord = cell.coord + direction;
-        if(neighborCoord.x >= 0 && neighborCoord.y >= 0 &&
+        if(neighborCoord != NULL_COORD &&
            neighborCoord.x < this->cols - 1 && neighborCoord.y < this->rows){
             if(this->at(neighborCoord).state) cell.neighbors++;
         }
@@ -76,13 +81,14 @@ void Grid::printStatus() const{
         return;
     }
 
-    std::cout<<"-- Status Grid"<<std::endl;
+    std::string outputBuff = "";
 
     for(const std::vector<Cell>& row : this->grid){
-        std::cout<<"| ";
-        for(const Cell& cell : row) cell.state ? std::cout<<"| " : std::cout<<". ";
-        std::cout<<"|"<<std::endl;
+        outputBuff += "| ";
+        for(const Cell& cell : row) cell.state ? outputBuff += "0 " : outputBuff += "` ";
+        outputBuff += "|\n";
     }
+    std::cout<<outputBuff;
 }
 
 void Grid::printNeighbors() const{

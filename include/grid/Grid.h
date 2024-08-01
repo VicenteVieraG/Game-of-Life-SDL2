@@ -1,9 +1,7 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include <utility>
 #include <vector>
-#include <memory>
 #include <Cell.h>
 
 /*
@@ -17,24 +15,21 @@ class Grid {
     public:
         Grid() = default;
         Grid(unsigned int cols, unsigned int rows);
+        ~Grid() = default;
 
         unsigned int cols;
         unsigned int rows;
 
-        Cell minBound;
-        Cell maxBound;
-
         std::vector<std::vector<Cell>> grid;
-        std::pair<Cell, Cell> boundingBox;
-
-        void printGrid() const;
-        void printStatus() const;
-        void printNeighbors() const;
 
         Cell& at(const Coord coord);
         const Cell& at(const Coord coord) const;
         void setState(const State state, const Coord coord);
         unsigned int countAliveNeighbors(Cell& cell);
+        
+        void printGrid() const;
+        void printStatus() const;
+        void printNeighbors() const;
 };
 
 #endif

@@ -51,12 +51,12 @@ Game::Game(){
         std::exit(-1);
     }
 
-    this->grid = Grid(80, 100);
-    this->grid.at({40, 40}).state = ALIVE;
-    this->grid.at({41, 40}).state = ALIVE;
-    this->grid.at({41, 41}).state = ALIVE;
-    this->grid.at({42, 41}).state = ALIVE;
-    this->grid.at({41, 42}).state = ALIVE;
+    this->grid = Grid(200, 200);
+    this->grid.at({80, 80}).state = ALIVE;
+    this->grid.at({81, 80}).state = ALIVE;
+    this->grid.at({81, 81}).state = ALIVE;
+    this->grid.at({82, 81}).state = ALIVE;
+    this->grid.at({81, 82}).state = ALIVE;
 
     // Initialize Game attributes
     this->shouldStop = SDL_FALSE;
@@ -66,15 +66,17 @@ Game::Game(){
 }
 
 // Complexity: O()
-void Game::computeState(){
+void Game::nextState(){
     Grid isoGrid = this->grid;
+    std::system("cls");
     isoGrid.printStatus();
 
     // Compute isoGrid from the current grid for next iteration
     for(const std::vector<Cell>& col : isoGrid.grid){
         for(Cell cell : col){
-            isoGrid.at(cell.coord).neighbors = this->grid.countAliveNeighbors(this->grid.at(cell.coord));
-            isoGrid.at(cell.coord).setCurrentState();
+            const Coord position = cell.coord;
+            isoGrid.at(position).neighbors = this->grid.countAliveNeighbors(this->grid.at(position));
+            isoGrid.at(position).setNewState();
         }
     }
     
@@ -103,10 +105,8 @@ void Game::start(){
         SDL_RenderClear(this->Renderer);
 
         // Debug
-        // this->grid.printStatus();
-        this->computeState();
-        std::this_thread::sleep_for(3s);
-        // std::system("cls");
+        this->nextState();
+        std::this_thread::sleep_for(100ms);
         SDL_RenderPresent(this->Renderer);
     }while(!this->shouldStop);
 

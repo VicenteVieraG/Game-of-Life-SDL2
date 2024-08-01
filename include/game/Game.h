@@ -22,7 +22,7 @@ class Game {
         Game();
         ~Game();
         
-        void computeState();
+        void nextState();
         void start();
 };
 

@@ -75,7 +75,7 @@ void Grid::printGrid() const{
     }
 }
 
-void Grid::printStatus() const{
+void Grid::printStatus(const unsigned int& generation, const unsigned int& population) const{
     if(this->grid.empty()){
         std::cerr<<"-- Can not print the status grid if it is empty D:"<<std::endl;
         return;
@@ -88,6 +88,10 @@ void Grid::printStatus() const{
         for(const Cell& cell : row) cell.state ? outputBuff += "0 " : outputBuff += "` ";
         outputBuff += "|\n";
     }
+    std::cout
+    <<"-- Status\n"
+    <<"---- Generation: "<<generation<<"\n"
+    <<"---- Population: "<<population<<std::endl;
     std::cout<<outputBuff;
 }
 

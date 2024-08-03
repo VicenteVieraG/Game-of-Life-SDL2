@@ -1,6 +1,7 @@
 #ifndef GRID_H
 #define GRID_H
 
+#include <compare>
 #include <vector>
 #include <Cell.h>
 
@@ -17,8 +18,11 @@ class Grid {
         Grid(unsigned int cols, unsigned int rows);
         ~Grid() = default;
 
+        auto operator<=>(const Grid&) const = default;
+
         unsigned int cols;
         unsigned int rows;
+        unsigned int size = this->cols * this->rows;
 
         std::vector<std::vector<Cell>> grid;
 
@@ -28,7 +32,7 @@ class Grid {
         unsigned int countAliveNeighbors(Cell& cell);
         
         void printGrid() const;
-        void printStatus() const;
+        void printStatus(const unsigned int& generation, const unsigned int& population) const;
         void printNeighbors() const;
 };
 

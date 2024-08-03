@@ -1,8 +1,10 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector>
-#include <chrono>
+#include <memory>
 #include <thread>
+#include <algorithm>
+#include <chrono>
 #include <SDL2/SDL.h>
 
 #include <Cell.h>
@@ -11,7 +13,13 @@
 
 using namespace std::literals::chrono_literals;
 
-Game::Game(){
+const unsigned int availableThreads(){
+    const unsigned int THREADS = std::thread::hardware_concurrency();
+    return THREADS ? THREADS : 2U;
+}
+const unsigned int THREADS = availableThreads();
+
+Game::Game() {
     // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cerr<<"-- Error initializing SDL"<<std::endl;
@@ -59,17 +67,27 @@ Game::Game(){
     this->grid.at({81, 82}).state = ALIVE;
 
     // Initialize Game attributes
+    this->cells = std::vector<std::unique_ptr<Cell>>(this->grid.size);
+    std::transform(this->grid.grid.begin(), this->grid.grid.end)
+    std::cout<<this->cells.at(0);
+    int j = 0;
+    for(int i = 0;i < this->cells.size();i++){
+        // if(i % (this->grid.cols - 1) == 0) j++;
+        // this->cells[i] = std::make_unique<Cell>(this->grid.grid[j][i]);
+        // std::cout<<cells[i]->coord<<std::endl;
+    }
+
+    for(const std::unique_ptr<Cell>& cell : this->cells) std::cout<<cell->coord<<", ";
     this->shouldStop = SDL_FALSE;
     this->population = 0;
     this->generation = 0;
-    this->liveCells = std::vector<Cell>();
 }
 
 // Complexity: O()
 void Game::nextState(){
     Grid isoGrid = this->grid;
     std::system("cls");
-    isoGrid.printStatus();
+    isoGrid.printStatus(this->generation, this->population);
 
     // Compute isoGrid from the current grid for next iteration
     for(const std::vector<Cell>& col : isoGrid.grid){

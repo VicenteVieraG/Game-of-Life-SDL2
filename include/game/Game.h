@@ -11,13 +11,18 @@ class Game {
     private:
         SDL_Window* Window;
         SDL_Renderer* Renderer;
+        SDL_bool shouldStop;
         const unsigned int WINDOW_WIDTH = 640;
         const unsigned int WINDOW_HEIGHT = 480;
-        SDL_bool shouldStop;
-        Grid grid;
+        
         unsigned int population;
         unsigned int generation;
+        
+        Grid grid;
         std::vector<Cell*> cells;
+
+        const unsigned int availableThreads();
+        const unsigned int THREADS;
     public:
         Game();
         ~Game();

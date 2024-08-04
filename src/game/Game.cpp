@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector>
-#include <memory>
 #include <thread>
 #include <algorithm>
 #include <chrono>
@@ -67,17 +66,10 @@ Game::Game() {
     this->grid.at({81, 82}).state = ALIVE;
 
     // Initialize Game attributes
-    this->cells = std::vector<std::unique_ptr<Cell>>(this->grid.size);
-    std::transform(this->grid.grid.begin(), this->grid.grid.end)
-    std::cout<<this->cells.at(0);
-    int j = 0;
-    for(int i = 0;i < this->cells.size();i++){
-        // if(i % (this->grid.cols - 1) == 0) j++;
-        // this->cells[i] = std::make_unique<Cell>(this->grid.grid[j][i]);
-        // std::cout<<cells[i]->coord<<std::endl;
+    for(int i = 0;i < this->grid.rows;i++){
+        for(int j =0;j < this->grid.cols;j++) this->cells.push_back(&this->grid.at({j, i})); 
     }
 
-    for(const std::unique_ptr<Cell>& cell : this->cells) std::cout<<cell->coord<<", ";
     this->shouldStop = SDL_FALSE;
     this->population = 0;
     this->generation = 0;

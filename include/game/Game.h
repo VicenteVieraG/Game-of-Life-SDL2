@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include <vector>
-#include <memory>
 #include <SDL2/SDL.h>
 
 #include <Grid.h>
@@ -18,7 +17,7 @@ class Game {
         Grid grid;
         unsigned int population;
         unsigned int generation;
-        std::vector<std::unique_ptr<Cell>> cells;
+        std::vector<Cell*> cells;
     public:
         Game();
         ~Game();

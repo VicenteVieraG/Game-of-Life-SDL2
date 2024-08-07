@@ -25,11 +25,12 @@ class Game {
 
         const unsigned int availableThreads();
         const unsigned int THREADS;
+        
+        void nextState();
     public:
         Game();
         ~Game();
         
-        void nextState();
         void start();
 };
 

@@ -27,26 +27,7 @@ const Cell& Grid::at(const Coord coord) const {
     return this->grid[coord.y][coord.x];
 }
 
-// @deprecated
-void Grid::setState(const State state, const Coord coord){
-    try{
-        if(this->grid.empty()) throw std::runtime_error("-- Can not set state of an empty grid D:");
-        if(coord.x >= this->cols || coord.y >= this->rows) throw std::out_of_range("-- Out of range cell. The values must be within the colums and rows range.");
-
-        // at(coord).state = state;
-        this->at(coord).state = state;
-
-        return;
-    }catch(const std::exception& e){
-        std::cerr<<e.what()<<std::endl;
-        std::cerr<<"The given coords values are: "<<"[x: "<<coord.x<<", y: "<<coord.y<<"]"<<std::endl;
-        std::cerr<<"The ranges of the grid are: "<<"[x: "<<this->cols<<", y: "<<this->rows<<"]"<<std::endl;
-        return;
-    }
-}
-
 unsigned int Grid::countAliveNeighbors(const Coord coord) const{
-    // Directions to lookup for alive neighbors
     unsigned int count = 0;
 
     for(const Coord& direction : directions){

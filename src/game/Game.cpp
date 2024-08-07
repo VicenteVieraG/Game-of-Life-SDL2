@@ -18,7 +18,7 @@ const unsigned int Game::availableThreads(){
     return THREADS ? THREADS : 2U;
 }
 
-Game::Game(): generation(0),population(0), shouldStop(SDL_FALSE), THREADS(availableThreads()) {
+Game::Game(): generation(0), population(0), shouldStop(SDL_FALSE), THREADS(availableThreads()) {
     // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cerr<<"-- Error initializing SDL"<<std::endl;
@@ -67,7 +67,7 @@ Game::Game(): generation(0),population(0), shouldStop(SDL_FALSE), THREADS(availa
 
     // Initialize Game attributes
     for(int i = 0;i < this->grid.rows;i++){
-        for(int j = 0;j < this->grid.cols;j++) this->cells.push_back(&this->grid.at({j, i}));
+        for(int j = 0;j < this->grid.cols;j++) this->cells.emplace_back(&this->grid.at({j, i}));
     }
 
     // Divide the grid in blocks for each available thread

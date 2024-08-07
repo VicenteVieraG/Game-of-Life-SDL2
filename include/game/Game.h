@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <vector>
+#include <utility>
 #include <SDL2/SDL.h>
 
 #include <Grid.h>
@@ -20,6 +21,7 @@ class Game {
         
         Grid grid;
         std::vector<Cell*> cells;
+        std::vector<std::pair<unsigned int, unsigned int>> blocks;
 
         const unsigned int availableThreads();
         const unsigned int THREADS;

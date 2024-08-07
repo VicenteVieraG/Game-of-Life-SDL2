@@ -15,11 +15,15 @@ Grid::Grid(unsigned int cols, unsigned int rows) : cols(cols), rows(rows), grid(
 
 // Retrieves the Grid's Cell at the given Coord
 Cell& Grid::at(const Coord coord){
-    if(coord.x >= this->cols || coord.y >= this->rows ) throw std::out_of_range("-- Out of range grid's coord access at Cell& Grid::at D:");
+    if(const auto& [x, y] = coord;
+        x < 0 && y < 0 &&
+        x >= this->cols && y >= this->rows) throw std::out_of_range("-- Out of range grid's coord access at Cell& Grid::at D:");
     return this->grid[coord.y][coord.x];
 }
 const Cell& Grid::at(const Coord coord) const {
-    if(coord.x >= this->cols || coord.y >= this->rows) throw std::out_of_range("-- Out of range grid's coord access at cosnt Cell& Grid::at const D:");
+    if(const auto& [x, y] = coord;
+        x < 0 && y < 0 &&
+        x >= this->cols && y >= this->rows) throw std::out_of_range("-- Out of range grid's coord access at cosnt Cell& Grid::at const D:");
     return this->grid[coord.y][coord.x];
 }
 

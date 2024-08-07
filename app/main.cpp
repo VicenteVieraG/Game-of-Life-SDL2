@@ -7,6 +7,7 @@
 int main(int argc, char** argv){
     std::cout<<project_name<<std::endl;
     std::cout<<project_version<<std::endl;
+    std::cout<<"Compiler Standard: "<<__cplusplus<<std::endl;
 
     Game Life;
     Life.start();

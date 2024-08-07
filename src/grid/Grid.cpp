@@ -43,7 +43,6 @@ void Grid::setState(const State state, const Coord coord){
 
 unsigned int Grid::countAliveNeighbors(const Coord coord) const{
     // Directions to lookup for alive neighbors
-    const Coord directions[8] = {RIGHT, LEFT, TOP, BOTTOM, TOPRIGHT, TOPLEFT, BOTTOMRIGHT, BOTTOMLEFT};
     const Coord NULL_COORD = {-1, -1};
     const Coord BOUND_COORD = {(int)this->cols, (int)this->rows};
     unsigned int count = 0;

@@ -4,16 +4,6 @@
 #include <iostream>
 #include <compare>
 
-// Directions unit vectors for Coords
-#define RIGHT {1, 0}
-#define LEFT {-1, 0}
-#define BOTTOM {0, 1}
-#define TOP {0, -1}
-#define TOPRIGHT {1, -1}
-#define TOPLEFT {-1, -1}
-#define BOTTOMRIGHT {1, 1}
-#define BOTTOMLEFT {-1, 1}
-
 enum State {
     DEAD,
     ALIVE
@@ -29,6 +19,17 @@ struct Coord {
         return os;
     }
 };
+
+// Directions unit vectors for Coords
+const Coord RIGHT = {1, 0};
+const Coord LEFT = {-1, 0};
+const Coord BOTTOM = {0, 1};
+const Coord TOP = {0, -1};
+const Coord TOPRIGHT = TOP + RIGHT;
+const Coord TOPLEFT = TOP + LEFT;
+const Coord BOTTOMRIGHT = BOTTOM + RIGHT;
+const Coord BOTTOMLEFT = BOTTOM + LEFT;
+const Coord directions[8] = {RIGHT, LEFT, TOP, BOTTOM, TOPRIGHT, TOPLEFT, BOTTOMRIGHT, BOTTOMLEFT};
 
 class Cell {
     public:

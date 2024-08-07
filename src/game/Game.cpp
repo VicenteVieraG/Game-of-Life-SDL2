@@ -90,14 +90,16 @@ Game::Game(): generation(0),population(0), shouldStop(SDL_FALSE), THREADS(availa
 void Game::nextState(){
     std::vector<std::thread> threads;
     Grid isoGrid = this->grid;
-    std::system("cls");
-    isoGrid.printStatus(this->generation, this->population);
+    this->population = 0;
+    this->generation++;
 
     // Create a thread for each block to compute the next generation
     for(const std::pair<unsigned int, unsigned int>& block : this->blocks){
         threads.emplace_back([&](const std::pair<unsigned int, unsigned int>& range) -> void {
-            for(unsigned int i = range.first;i <= range.second;i++){
+            const auto& [first, last] = range;
+            for(unsigned int i = first;i <= last;i++){
                 const Coord CURRENT = this->cells[i]->coord;
+
                 isoGrid.at(CURRENT).neighbors = this->grid.countAliveNeighbors(CURRENT);
                 isoGrid.at(CURRENT).setNewState();
                 if(isoGrid.at(CURRENT).state) this->population++;
@@ -106,6 +108,7 @@ void Game::nextState(){
     }
     for(std::thread& thread : threads) thread.join();
 
+    // Merge the grids to update the state at the same time
     this->grid = isoGrid;
 
     return;
@@ -123,13 +126,16 @@ void Game::start(){
             }
         }
         // Draw in screen
-        SDL_SetRenderDrawColor(this->Renderer, 255, 255, 255, 255);
-        SDL_RenderClear(this->Renderer);
+        // SDL_SetRenderDrawColor(this->Renderer, 255, 255, 255, 255);
+        // SDL_RenderClear(this->Renderer);
 
-        // Debug
+        // Debug terminal print
+        std::system("cls");
+        this->grid.printStatus(this->generation, this->population);
         this->nextState();
+
         std::this_thread::sleep_for(100ms);
-        SDL_RenderPresent(this->Renderer);
+        // SDL_RenderPresent(this->Renderer);
     }while(!this->shouldStop);
 
     // Cleaning objects

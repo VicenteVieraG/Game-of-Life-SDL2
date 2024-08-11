@@ -76,13 +76,13 @@ Game::Game(): generation(0), population(0), shouldStop(SDL_FALSE), THREADS(avail
     this->blocks = std::vector<std::pair<unsigned int, unsigned int>>(this->THREADS, std::pair<unsigned int, unsigned int>(0, 0));
     this->blocks[0] = std::pair<unsigned int, unsigned int>(0, BLOCK_SIZE);
     for(unsigned int i = 1; i < this->blocks.size();i++){
-        this->blocks[i].first = this->blocks[i - 1].second + 1;
+        auto& [first, last] = this->blocks[i];
+        auto [firstPrev, lastPrev] = this->blocks[i - 1];
+
+        first = ++lastPrev;
 
         // The last block will span through the remaining cells
-        (i != (this->blocks.size() - 1)) ?
-            this->blocks[i].second = this->blocks[i].first + BLOCK_SIZE
-            :
-            this->blocks[i].second = this->cells.size() - 1;
+        (i != (this->blocks.size() - 1)) ? last = first + BLOCK_SIZE : last = this->cells.size() - 1;
     }
 }
 

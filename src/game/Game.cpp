@@ -32,7 +32,7 @@ Game::Game(): generation(0), population(0), shouldStop(SDL_FALSE), THREADS(avail
         SDL_WINDOWPOS_CENTERED,
         this->WINDOW_WIDTH,
         this->WINDOW_WIDTH,
-        SDL_WINDOW_SHOWN
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
 
     if(this->Window == nullptr){
@@ -115,27 +115,58 @@ void Game::nextState(){
 }
 
 void Game::start(){
-    // Rendering loop
+    /* ~~Inicialization~~ */
+    std::pair<int, int> winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT);   // Window's size
+    const std::pair<float, float> gap(1.0f, 1.0f);                          // Initial Gap proportion
+    const std::pair<float, float> size(1.0f, 1.0f);                         // Initial Cell proportion
+    const std::pair<float, float> scale(0.9f, 1.1f);                        // Initial scale up/down factor
+
+    // Colors
+    const auto [rW, gW, bW, aW] = SDL_Color{255, 255, 255, 100};
+    const auto [rB, gB, bB, aB] = SDL_Color{0, 0, 0, 100};
+
+    /* ~~Rendering loop~~ */
     do{
         // Manage events
         SDL_Event e;
-        while(SDL_PollEvent(&e) != 0){
+        while(SDL_PollEvent(&e)){
             switch(e.type){
                 case SDL_QUIT:
                     this->shouldStop = SDL_TRUE;
+                    break;
+                case SDL_WINDOWEVENT:
+                    switch(e.window.event){
+                        case SDL_WINDOWEVENT_CLOSE:
+                            this->shouldStop = SDL_TRUE;
+                            break;
+                        case SDL_WINDOWEVENT_RESIZED:
+                            auto& [width, height] = winSize;
+                            SDL_GetWindowSize(this->Window, &width, &height);
+                            break;
+                    }
             }
         }
-        // Draw in screen
-        // SDL_SetRenderDrawColor(this->Renderer, 255, 255, 255, 255);
-        // SDL_RenderClear(this->Renderer);
 
-        // Debug terminal print
-        std::system("cls");
-        this->grid.printStatus(this->generation, this->population);
+        /* ~~Draw in screen~~ */
         this->nextState();
 
-        std::this_thread::sleep_for(100ms);
-        // SDL_RenderPresent(this->Renderer);
+        // Set background to black
+        SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW);
+        SDL_RenderClear(this->Renderer);
+
+        // Grid Rendering
+        SDL_Rect square = { 350, 250, 100, 100 };
+        SDL_SetRenderDrawColor(this->Renderer, 255, 0, 0, 255);
+        SDL_RenderFillRect(this->Renderer, &square);
+        SDL_RenderPresent(this->Renderer);
+
+        SDL_Delay(16);
+        
+        /* ~~Debug terminal print~~ */
+        // std::system("cls");
+        // this->grid.printStatus(this->generation, this->population);
+        // this->nextState();
+        // std::this_thread::sleep_for(100ms);
     }while(!this->shouldStop);
 
     // Cleaning objects

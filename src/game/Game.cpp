@@ -31,7 +31,7 @@ Game::Game(): generation(0), population(0), shouldStop(SDL_FALSE), THREADS(avail
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         this->WINDOW_WIDTH,
-        this->WINDOW_WIDTH,
+        this->WINDOW_HEIGHT,
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
 
@@ -116,10 +116,10 @@ void Game::nextState(){
 
 void Game::start(){
     /* ~~Inicialization~~ */
-    std::pair<int, int> winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT);   // Window's size
-    const std::pair<float, float> gap(1.0f, 1.0f);                          // Initial Gap proportion
-    const std::pair<float, float> size(1.0f, 1.0f);                         // Initial Cell proportion
-    const std::pair<float, float> scale(0.9f, 1.1f);                        // Initial scale up/down factor
+    std::pair<int, int> winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT); // Window's size
+    const std::pair<float, float> scale(0.9f, 1.1f); // Initial scale up/down factor
+    std::pair<float, float> cellSize(1.0f, 1.0f);
+    const int GAP = 1;
 
     // Colors
     const auto [rW, gW, bW, aW] = SDL_Color{255, 255, 255, 100};
@@ -155,11 +155,27 @@ void Game::start(){
         SDL_RenderClear(this->Renderer);
 
         // Grid Rendering
-        SDL_Rect square = { 350, 250, 100, 100 };
-        SDL_SetRenderDrawColor(this->Renderer, 255, 0, 0, 255);
-        SDL_RenderFillRect(this->Renderer, &square);
-        SDL_RenderPresent(this->Renderer);
+        for(const std::vector<Cell>& row : this->grid.grid){
+            for(const Cell& cell : row){
+                const auto& [x, y] = cell.coord;
+                const auto& [width, height] = cellSize;
 
+                const SDL_FRect SQUARE = {
+                    x + GAP + (width * x),
+                    y + GAP + (height * y),
+                    width,
+                    height
+                };
+
+                cell.state ?
+                    SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW)
+                    :
+                    SDL_SetRenderDrawColor(this->Renderer, rB, gB, bB, aB);
+                SDL_RenderFillRectF(this->Renderer, &SQUARE);
+            }
+        }
+
+        SDL_RenderPresent(this->Renderer);
         SDL_Delay(16);
         
         /* ~~Debug terminal print~~ */

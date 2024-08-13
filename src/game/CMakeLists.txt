@@ -9,6 +9,7 @@ find_package(imgui CONFIG
 )
 target_link_libraries(${GAME}
     PUBLIC ${GRID}
+    PUBLIC ${COLORS}
     PUBLIC SDL2::SDL2
     PUBLIC imgui::imgui
 )

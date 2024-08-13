@@ -3,8 +3,10 @@
 #include <math.h>
 #include <vector>
 #include <utility>
+#include <exception>
 #include <thread>
 #include <chrono>
+
 #include <SDL2/SDL.h>
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
@@ -21,7 +23,13 @@ const unsigned int Game::availableThreads(){
     return THREADS ? THREADS : 2U;
 }
 
-Game::Game(): generation(0), population(0), shouldStop(SDL_FALSE), THREADS(availableThreads()) {
+Game::Game():
+    generation(0),
+    population(0),
+    shouldStop(SDL_FALSE),
+    winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT),
+    cellSize({1.0f, 1.0f}),
+    THREADS(availableThreads()) {
     // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cerr<<"-- Error initializing SDL"<<std::endl;
@@ -117,18 +125,49 @@ void Game::nextState(){
     return;
 }
 
+void Game::renderGrid() const {
+    if(this->Window == nullptr || this->Renderer == nullptr) throw std::runtime_error("-- Window or Renderer not initialized D:");
+    
+    // Colors
+    const auto [rW, gW, bW, aW] = SDL_Color{255, 255, 255, 100};
+    const auto [rB, gB, bB, aB] = SDL_Color{0, 0, 0, 100};
+
+    for(const std::vector<Cell>& row : this->grid.grid){
+        for(const Cell& cell : row){
+            const auto& [x, y] = cell.coord;
+            const auto& [width, height] = this->cellSize;
+
+            const SDL_FRect SQUARE = {
+                x + this->GAP + (width * x),
+                y + this->GAP + (height * y),
+                width,
+                height
+            };
+
+            cell.state ?
+                SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW)
+                :
+                SDL_SetRenderDrawColor(this->Renderer, rB, gB, bB, aB);
+            SDL_RenderFillRectF(this->Renderer, &SQUARE);
+        }
+    }
+}
+
 void Game::start(){
     /* ~~Inicialization~~ */
-    std::pair<int, int> winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT); // Window's size
-    const std::pair<float, float> scale(0.9f, 1.1f); // Initial scale up/down factor
-    std::pair<float, float> cellSize(1.0f, 1.0f);
-    const int GAP = 1;
+    // Initialize ImGui
+    // IMGUI_CHECKVERSION();
+    // ImGui::CreateContext();
+    // ImGuiIO& io = ImGui::GetIO();
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
     // Colors
     const auto [rW, gW, bW, aW] = SDL_Color{255, 255, 255, 100};
     const auto [rB, gB, bB, aB] = SDL_Color{0, 0, 0, 100};
 
     /* ~~Rendering loop~~ */
+    SDL_bool runSimulation = SDL_FALSE;
+
     do{
         // Manage events
         SDL_Event e;
@@ -149,38 +188,21 @@ void Game::start(){
                     }
             }
         }
-
-        /* ~~Draw in screen~~ */
-        this->nextState();
-
-        // Set background to black
-        SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW);
-        SDL_RenderClear(this->Renderer);
-
-        // Grid Rendering
-        for(const std::vector<Cell>& row : this->grid.grid){
-            for(const Cell& cell : row){
-                const auto& [x, y] = cell.coord;
-                const auto& [width, height] = cellSize;
-
-                const SDL_FRect SQUARE = {
-                    x + GAP + (width * x),
-                    y + GAP + (height * y),
-                    width,
-                    height
-                };
-
-                cell.state ?
-                    SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW)
-                    :
-                    SDL_SetRenderDrawColor(this->Renderer, rB, gB, bB, aB);
-                SDL_RenderFillRectF(this->Renderer, &SQUARE);
-            }
-        }
-
-        SDL_RenderPresent(this->Renderer);
-        SDL_Delay(16);
         
+        /* ~~Draw in screen~~ */
+            // Run simulation
+            this->nextState();
+
+            // Set background to black
+            SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW);
+            SDL_RenderClear(this->Renderer);
+
+            // Grid Rendering
+            this->renderGrid();
+
+            SDL_RenderPresent(this->Renderer);
+            SDL_Delay(16);
+
         #ifdef DEBUG
         /* ~~Debug terminal print~~ */
         // std::system("cls");
@@ -196,11 +218,6 @@ void Game::start(){
 
     SDL_Quit();
     return;
-}
-
-void Game::menu() const {
-    /* ~~First render~~ */
-
 }
 
 Game::~Game(){

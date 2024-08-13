@@ -15,6 +15,11 @@ class Game {
         SDL_bool shouldStop;
         const unsigned int WINDOW_WIDTH = 640;
         const unsigned int WINDOW_HEIGHT = 480;
+
+        std::pair<int, int> winSize;
+        std::pair<float, float> cellSize;
+        const std::pair<float, float> scale{0.9f, 1.1f};
+        const unsigned int GAP = 1;
         
         unsigned int population;
         unsigned int generation;
@@ -27,11 +32,11 @@ class Game {
         const unsigned int THREADS;
         
         void nextState();
+        void renderGrid() const;
     public:
         Game();
         ~Game();
         
-        void menu() const;
         void start();
 };
 

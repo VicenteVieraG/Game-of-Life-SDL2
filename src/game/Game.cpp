@@ -6,6 +6,9 @@
 #include <thread>
 #include <chrono>
 #include <SDL2/SDL.h>
+#include <imgui.h>
+#include <imgui_impl_sdl2.h>
+#include <imgui_impl_sdlrenderer2.h>
 
 #include <Cell.h>
 #include <Grid.h>
@@ -178,11 +181,13 @@ void Game::start(){
         SDL_RenderPresent(this->Renderer);
         SDL_Delay(16);
         
+        #ifdef DEBUG
         /* ~~Debug terminal print~~ */
         // std::system("cls");
         // this->grid.printStatus(this->generation, this->population);
         // this->nextState();
         // std::this_thread::sleep_for(100ms);
+        #endif
     }while(!this->shouldStop);
 
     // Cleaning objects
@@ -191,6 +196,11 @@ void Game::start(){
 
     SDL_Quit();
     return;
+}
+
+void Game::menu() const {
+    /* ~~First render~~ */
+
 }
 
 Game::~Game(){

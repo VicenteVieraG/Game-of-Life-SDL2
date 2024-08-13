@@ -31,6 +31,7 @@ class Game {
         Game();
         ~Game();
         
+        void menu() const;
         void start();
 };
 

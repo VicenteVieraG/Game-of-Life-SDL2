@@ -69,6 +69,7 @@ Game::Game():
         std::exit(-1);
     }
 
+    // Initialize Game attributes
     this->grid = Grid(200, 200);
     this->grid.at({80, 80}).state = ALIVE;
     this->grid.at({81, 80}).state = ALIVE;
@@ -76,7 +77,6 @@ Game::Game():
     this->grid.at({82, 81}).state = ALIVE;
     this->grid.at({81, 82}).state = ALIVE;
 
-    // Initialize Game attributes
     for(int i = 0;i < this->grid.rows;i++){
         for(int j = 0;j < this->grid.cols;j++) this->cells.emplace_back(&this->grid.at({j, i}));
     }
@@ -126,15 +126,14 @@ void Game::nextState(){
 }
 
 void Game::renderGrid() const {
-    if(this->Window == nullptr || this->Renderer == nullptr) throw std::runtime_error("-- Window or Renderer not initialized D:");
-    
     // Colors
     const auto [rW, gW, bW, aW] = SDL_Color{255, 255, 255, 100};
     const auto [rB, gB, bB, aB] = SDL_Color{0, 0, 0, 100};
 
     for(const std::vector<Cell>& row : this->grid.grid){
         for(const Cell& cell : row){
-            const auto& [x, y] = cell.coord;
+            const Coord& current = cell.coord;
+            const auto& [x, y] = current;
             const auto& [width, height] = this->cellSize;
 
             const SDL_FRect SQUARE = {
@@ -144,9 +143,9 @@ void Game::renderGrid() const {
                 height
             };
 
-            cell.state ?
+            this->grid.at(current).state ?
                 SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW)
-                :
+                    :
                 SDL_SetRenderDrawColor(this->Renderer, rB, gB, bB, aB);
             SDL_RenderFillRectF(this->Renderer, &SQUARE);
         }
@@ -190,18 +189,21 @@ void Game::start(){
         }
         
         /* ~~Draw in screen~~ */
+        // Clear Screen
+        SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW);
+        SDL_RenderClear(this->Renderer);
+
+        if(runSimulation){
             // Run simulation
             this->nextState();
-
-            // Set background to black
-            SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW);
-            SDL_RenderClear(this->Renderer);
-
-            // Grid Rendering
             this->renderGrid();
-
-            SDL_RenderPresent(this->Renderer);
-            SDL_Delay(16);
+        }else{
+            // Pause Simulation and enter the menu
+            this->renderGrid();
+        }
+        
+        SDL_RenderPresent(this->Renderer);
+        SDL_Delay(16);
 
         #ifdef DEBUG
         /* ~~Debug terminal print~~ */
@@ -213,9 +215,7 @@ void Game::start(){
     }while(!this->shouldStop);
 
     // Cleaning objects
-    SDL_DestroyRenderer(this->Renderer);
-    SDL_DestroyWindow(this->Window);
-
+    Game::~Game();
     SDL_Quit();
     return;
 }

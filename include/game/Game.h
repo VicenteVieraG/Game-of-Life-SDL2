@@ -19,7 +19,10 @@ class Game {
         std::pair<int, int> winSize;
         std::pair<float, float> cellSize;
         const std::pair<float, float> scale{0.9f, 1.1f};
+        std::pair<float, float> offset{0.0f, 0.0f};
         const unsigned int GAP = 1;
+        const int DISPLACE = 15;
+        const float zoomFactor = 0.5f;
         
         unsigned int population;
         unsigned int generation;

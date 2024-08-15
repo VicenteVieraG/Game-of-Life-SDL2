@@ -135,10 +135,11 @@ void Game::renderGrid() const {
             const Coord& current = cell.coord;
             const auto& [x, y] = current;
             const auto& [width, height] = this->cellSize;
+            const auto& [offsetW, offsetH] = this->offset;
 
             const SDL_FRect SQUARE = {
-                x + this->GAP + (width * x),
-                y + this->GAP + (height * y),
+                x + this->GAP + offsetW + (width * x),
+                y + this->GAP + offsetH + (height * y),
                 width,
                 height
             };
@@ -175,16 +176,43 @@ void Game::start(){
                 case SDL_QUIT:
                     this->shouldStop = SDL_TRUE;
                     break;
+                case SDL_MOUSEWHEEL:{
+                    const auto& [scaleDown, scaleUp] = this->scale;
+                    auto& [offsetW, offsetH] = this->offset;
+                    auto& [cellW, cellH] = this->cellSize;
+                    const auto [x, y] = Coord{e.wheel.x, e.wheel.y};
+                    const auto [mouseX, mouseY] = Coord{e.wheel.mouseX, e.wheel.mouseY};
+
+                    // Horizontal Wheel movement
+                    if(x) offsetW += (float)(x * DISPLACE * -1);
+                    
+                    // Vertical Wheel movement
+                    if(y > 0){
+                        // offsetW -= this->zoomFactor * (mouseX - offsetW);
+                        // offsetH -= this->zoomFactor * (mouseY - offsetH);
+
+                        cellW *= scaleUp;
+                        cellH *= scaleUp;
+
+                        offsetW -= (cellW * scaleUp) - mouseX;
+                        offsetH -= (cellH * scaleUp) - mouseY;
+                    }
+                    else if(y < 0){
+                        offsetW += this->zoomFactor * (mouseX - offsetW);
+                        offsetH += this->zoomFactor * (mouseY - offsetH);
+
+                        cellW *= scaleDown;
+                        cellH *= scaleDown;
+                    }
+                    break;}
                 case SDL_WINDOWEVENT:
                     switch(e.window.event){
-                        case SDL_WINDOWEVENT_CLOSE:
-                            this->shouldStop = SDL_TRUE;
-                            break;
                         case SDL_WINDOWEVENT_RESIZED:
                             auto& [width, height] = winSize;
                             SDL_GetWindowSize(this->Window, &width, &height);
                             break;
                     }
+                break;
             }
         }
         

@@ -8,6 +8,11 @@
 #include <Grid.h>
 #include <Cell.h>
 
+struct Events {
+    const SDL_MouseWheelEvent wheel;
+    const SDL_WindowEvent window;
+};
+
 class Game {
     private:
         SDL_Window* Window;
@@ -22,7 +27,7 @@ class Game {
         std::pair<float, float> offset{0.0f, 0.0f};
         const unsigned int GAP = 1;
         const int DISPLACE = 15;
-        const float zoomFactor = 0.5f;
+        float zoomFactor = 1.0f;
         
         unsigned int population;
         unsigned int generation;
@@ -36,6 +41,9 @@ class Game {
         
         void nextState();
         void renderGrid() const;
+        void quit();
+        void handleWindow(const SDL_WindowEvent& window);
+        void handleWheel(const SDL_MouseWheelEvent& wheel);
     public:
         Game();
         ~Game();

@@ -172,47 +172,11 @@ void Game::start(){
         // Manage events
         SDL_Event e;
         while(SDL_PollEvent(&e)){
+            const auto& [wheel, window] = Events{e.wheel, e.window};
             switch(e.type){
-                case SDL_QUIT:
-                    this->shouldStop = SDL_TRUE;
-                    break;
-                case SDL_MOUSEWHEEL:{
-                    const auto& [scaleDown, scaleUp] = this->scale;
-                    auto& [offsetW, offsetH] = this->offset;
-                    auto& [cellW, cellH] = this->cellSize;
-                    const auto [x, y] = Coord{e.wheel.x, e.wheel.y};
-                    const auto [mouseX, mouseY] = Coord{e.wheel.mouseX, e.wheel.mouseY};
-
-                    // Horizontal Wheel movement
-                    if(x) offsetW += (float)(x * DISPLACE * -1);
-                    
-                    // Vertical Wheel movement
-                    if(y > 0){
-                        // offsetW -= this->zoomFactor * (mouseX - offsetW);
-                        // offsetH -= this->zoomFactor * (mouseY - offsetH);
-
-                        cellW *= scaleUp;
-                        cellH *= scaleUp;
-
-                        offsetW -= (cellW * scaleUp) - mouseX;
-                        offsetH -= (cellH * scaleUp) - mouseY;
-                    }
-                    else if(y < 0){
-                        offsetW += this->zoomFactor * (mouseX - offsetW);
-                        offsetH += this->zoomFactor * (mouseY - offsetH);
-
-                        cellW *= scaleDown;
-                        cellH *= scaleDown;
-                    }
-                    break;}
-                case SDL_WINDOWEVENT:
-                    switch(e.window.event){
-                        case SDL_WINDOWEVENT_RESIZED:
-                            auto& [width, height] = winSize;
-                            SDL_GetWindowSize(this->Window, &width, &height);
-                            break;
-                    }
-                break;
+                case SDL_QUIT: quit(); break;
+                case SDL_MOUSEWHEEL: handleWheel(wheel); break;
+                case SDL_WINDOWEVENT: handleWindow(window); break;
             }
         }
         
@@ -246,6 +210,47 @@ void Game::start(){
     Game::~Game();
     SDL_Quit();
     return;
+}
+
+void Game::quit(){this->shouldStop = SDL_TRUE;}
+
+void Game::handleWindow(const SDL_WindowEvent& window){
+    switch(window.event){
+        case SDL_WINDOWEVENT_RESIZED:
+            auto& [width, height] = this->winSize;
+            SDL_GetWindowSize(this->Window, &width, &height);
+            break;
+    }
+}
+
+void Game::handleWheel(const SDL_MouseWheelEvent& wheel){
+    const auto [mouseX, mouseY] = Coord{wheel.mouseX, wheel.mouseY};
+    const auto& [scaleDown, scaleUp] = this->scale;
+    const auto [x, y] = Coord{wheel.x, wheel.y};
+    auto& [offsetW, offsetH] = this->offset;
+    auto& [cellW, cellH] = this->cellSize;
+
+    // Horizontal Wheel movement
+    if(x) offsetW += (float)(x * DISPLACE * -1);
+
+    // Vertical Wheel movement
+    // if(y > 0){
+    //     // offsetW -= this->zoomFactor * (mouseX - offsetW);
+    //     // offsetH -= this->zoomFactor * (mouseY - offsetH);
+
+    //     cellW *= scaleUp;
+    //     cellH *= scaleUp;
+
+    //     offsetW -= (cellW * scaleUp) - mouseX;
+    //     offsetH -= (cellH * scaleUp) - mouseY;
+    // }
+    // else if(y < 0){
+    //     offsetW += this->zoomFactor * (mouseX - offsetW);
+    //     offsetH += this->zoomFactor * (mouseY - offsetH);
+
+    //     cellW *= scaleDown;
+    //     cellH *= scaleDown;
+    // }
 }
 
 Game::~Game(){

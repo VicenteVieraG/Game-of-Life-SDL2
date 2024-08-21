@@ -12,6 +12,8 @@
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_sdlrenderer2.h>
 
+#include <Colors.h>
+#include <Events.hpp>
 #include <Cell.h>
 #include <Grid.h>
 #include <Game.h>
@@ -126,10 +128,6 @@ void Game::nextState(){
 }
 
 void Game::renderGrid() const {
-    // Colors
-    const auto [rW, gW, bW, aW] = SDL_Color{255, 255, 255, 100};
-    const auto [rB, gB, bB, aB] = SDL_Color{0, 0, 0, 100};
-
     for(const std::vector<Cell>& row : this->grid.grid){
         for(const Cell& cell : row){
             const Coord& current = cell.coord;
@@ -145,9 +143,9 @@ void Game::renderGrid() const {
             };
 
             this->grid.at(current).state ?
-                SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW)
+                SDL_SetRenderDrawColor(this->Renderer, WHITE)
                     :
-                SDL_SetRenderDrawColor(this->Renderer, rB, gB, bB, aB);
+                SDL_SetRenderDrawColor(this->Renderer, BLACK);
             SDL_RenderFillRectF(this->Renderer, &SQUARE);
         }
     }
@@ -161,48 +159,38 @@ void Game::start(){
     // ImGuiIO& io = ImGui::GetIO();
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-    // Colors
-    const auto [rW, gW, bW, aW] = SDL_Color{255, 255, 255, 100};
-    const auto [rB, gB, bB, aB] = SDL_Color{0, 0, 0, 100};
-
     /* ~~Rendering loop~~ */
     SDL_bool runSimulation = SDL_FALSE;
-
     do{
         // Manage events
         SDL_Event e;
         while(SDL_PollEvent(&e)){
             const auto& [wheel, window] = Events{e.wheel, e.window};
             switch(e.type){
-                case SDL_QUIT: quit(); break;
-                case SDL_MOUSEWHEEL: handleWheel(wheel); break;
-                case SDL_WINDOWEVENT: handleWindow(window); break;
+                case SDL_QUIT:          Handle::stop(this->shouldStop); break;
+                case SDL_WINDOWEVENT:   Handle::windowEvent(window); break;
+                case SDL_MOUSEWHEEL:    Handle::wheel(wheel, this->scale, this->offset, this->cellSize); break;
             }
         }
-        
+
         /* ~~Draw in screen~~ */
         // Clear Screen
-        SDL_SetRenderDrawColor(this->Renderer, rW, gW, bW, aW);
+        SDL_SetRenderDrawColor(this->Renderer, WHITE);
         SDL_RenderClear(this->Renderer);
 
-        if(runSimulation){
-            // Run simulation
-            this->nextState();
-            this->renderGrid();
-        }else{
-            // Pause Simulation and enter the menu
-            this->renderGrid();
-        }
+        // Render menu
+        if(runSimulation) this->nextState();
+        this->renderGrid();
         
         SDL_RenderPresent(this->Renderer);
         SDL_Delay(16);
 
         #ifdef DEBUG
         /* ~~Debug terminal print~~ */
-        // std::system("cls");
-        // this->grid.printStatus(this->generation, this->population);
-        // this->nextState();
-        // std::this_thread::sleep_for(100ms);
+        std::system("cls");
+        this->grid.printStatus(this->generation, this->population);
+        this->nextState();
+        std::this_thread::sleep_for(100ms);
         #endif
     }while(!this->shouldStop);
 
@@ -210,47 +198,6 @@ void Game::start(){
     Game::~Game();
     SDL_Quit();
     return;
-}
-
-void Game::quit(){this->shouldStop = SDL_TRUE;}
-
-void Game::handleWindow(const SDL_WindowEvent& window){
-    switch(window.event){
-        case SDL_WINDOWEVENT_RESIZED:
-            auto& [width, height] = this->winSize;
-            SDL_GetWindowSize(this->Window, &width, &height);
-            break;
-    }
-}
-
-void Game::handleWheel(const SDL_MouseWheelEvent& wheel){
-    const auto [mouseX, mouseY] = Coord{wheel.mouseX, wheel.mouseY};
-    const auto& [scaleDown, scaleUp] = this->scale;
-    const auto [x, y] = Coord{wheel.x, wheel.y};
-    auto& [offsetW, offsetH] = this->offset;
-    auto& [cellW, cellH] = this->cellSize;
-
-    // Horizontal Wheel movement
-    if(x) offsetW += (float)(x * DISPLACE * -1);
-
-    // Vertical Wheel movement
-    // if(y > 0){
-    //     // offsetW -= this->zoomFactor * (mouseX - offsetW);
-    //     // offsetH -= this->zoomFactor * (mouseY - offsetH);
-
-    //     cellW *= scaleUp;
-    //     cellH *= scaleUp;
-
-    //     offsetW -= (cellW * scaleUp) - mouseX;
-    //     offsetH -= (cellH * scaleUp) - mouseY;
-    // }
-    // else if(y < 0){
-    //     offsetW += this->zoomFactor * (mouseX - offsetW);
-    //     offsetH += this->zoomFactor * (mouseY - offsetH);
-
-    //     cellW *= scaleDown;
-    //     cellH *= scaleDown;
-    // }
 }
 
 Game::~Game(){

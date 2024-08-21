@@ -1,1 +1,1 @@
-target_include_directories(${COLORS} PUBLIC ./Colors.h)
+target_include_directories(${COLORS} PUBLIC ./)

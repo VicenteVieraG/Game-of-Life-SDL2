@@ -11,8 +11,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}\\bin)
 # Libs
 set(CELL cell)
 set(GRID grid)
-set(COLORS colors)
 set(GAME game)
+set(COLORS colors)
+set(EVENTS events)
 
 # Subdirectories
 add_subdirectory(config)

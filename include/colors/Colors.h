@@ -1,11 +1,14 @@
 #ifndef COLORS_H
-#define
+#define COLORS_H
+
+#define WHITE 255,255,255,100
+#define BLACK 0,0,0,100
 
 #include <SDL2/SDL.h>
 
 namespace Colors {
-    const SDL_Color white{255, 255, 255, 100};
-    const SDL_Color black{0, 0, 0, 100};
+    const static SDL_Color white{255, 255, 255, 100};
+    const static SDL_Color black{0, 0, 0, 100};
 };
 
 #endif

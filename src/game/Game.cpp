@@ -185,12 +185,16 @@ void Game::start(){
         SDL_RenderPresent(this->Renderer);
         SDL_Delay(16);
 
-        #ifdef DEBUG
         /* ~~Debug terminal print~~ */
-        std::system("cls");
-        this->grid.printStatus(this->generation, this->population);
-        this->nextState();
-        std::this_thread::sleep_for(100ms);
+        #ifdef DEBUG
+        #ifdef _WIN32 || _WIN32
+            std::system("cls");
+        #elif
+            std::system("clear");
+        #endif
+            this->grid.printStatus(this->generation, this->population);
+            this->nextState();
+            std::this_thread::sleep_for(100ms);
         #endif
     }while(!this->shouldStop);
 

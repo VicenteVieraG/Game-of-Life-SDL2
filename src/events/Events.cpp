@@ -13,34 +13,31 @@ namespace Handle{
         }
     }
 
-    void wheel(const SDL_MouseWheelEvent wheel, const std::pair<float, float> scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize){
-        const auto [mouseX, mouseY] = Coord{wheel.mouseX, wheel.mouseY};
-        const auto [x, y] = Coord{wheel.x, wheel.y};
-        const auto [scaleUp, scaleDown] = scale;
+    void wheel(const SDL_MouseWheelEvent wheel, const std::pair<float, float> scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize, float& zoom){
         auto& [offsetX, offsetY] = offset;
         auto& [cellW, cellH] = cellSize;
-        const int displace = 15;
+        const auto [scaleDown, scaleUp] = scale;
+        const auto [mouseX, mouseY] = Coord{wheel.mouseX, wheel.mouseY};
+        const auto [wheelX, wheelY] = Coord{wheel.x, wheel.y};
+        const int displace = -15;
 
-        // Horizontal scroll
-        if(x) offsetX += static_cast<float>(x * displace * -1);
+        /* ~~Zoom computation~~ */
+        const float gridX = (mouseX - offsetX) / zoom;
+        const float gridY = (mouseY - offsetY) / zoom;
 
-        // Vertical Wheel movement
-        // if(y > 0){
-        //     // offsetW -= this->zoomFactor * (mouseX - offsetW);
-        //     // offsetH -= this->zoomFactor * (mouseY - offsetH);
+        if(wheelY > 0) zoom *= scaleUp;
+        if(wheelY < 0) zoom *= scaleDown;
 
-        //     cellW *= scaleUp;
-        //     cellH *= scaleUp;
+        // New offset
+        offsetX = mouseX - gridX * zoom;
+        offsetY = mouseY - gridY * zoom;
 
-        //     offsetW -= (cellW * scaleUp) - mouseX;
-        //     offsetH -= (cellH * scaleUp) - mouseY;
-        // }
-        // else if(y < 0){
-        //     offsetW += this->zoomFactor * (mouseX - offsetW);
-        //     offsetH += this->zoomFactor * (mouseY - offsetH);
+        // Scale cells' size
+        cellW = 1.0f * zoom;
+        cellH = 1.0f * zoom;
 
-        //     cellW *= scaleDown;
-        //     cellH *= scaleDown;
-        // }
+        // Horizontal displace
+        if(wheelX) offsetX += static_cast<float>(wheelX * displace);
     }
+
 };

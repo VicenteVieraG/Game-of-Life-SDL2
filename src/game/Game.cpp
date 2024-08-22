@@ -169,7 +169,7 @@ void Game::start(){
             switch(e.type){
                 case SDL_QUIT:          Handle::stop(this->shouldStop); break;
                 case SDL_WINDOWEVENT:   Handle::windowEvent(window); break;
-                case SDL_MOUSEWHEEL:    Handle::wheel(wheel, this->scale, this->offset, this->cellSize); break;
+                case SDL_MOUSEWHEEL:    Handle::wheel(wheel, this->scale, this->offset, this->cellSize, this->zoomFactor); break;
             }
         }
 
@@ -187,6 +187,7 @@ void Game::start(){
 
         /* ~~Debug terminal print~~ */
         #ifdef DEBUG
+        #ifdef TERMINAL
         #ifdef _WIN32 || _WIN32
             std::system("cls");
         #elif
@@ -195,6 +196,7 @@ void Game::start(){
             this->grid.printStatus(this->generation, this->population);
             this->nextState();
             std::this_thread::sleep_for(100ms);
+        #endif
         #endif
     }while(!this->shouldStop);
 

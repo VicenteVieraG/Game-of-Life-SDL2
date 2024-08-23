@@ -1,4 +1,5 @@
 #include <utility>
+#include <algorithm>
 
 #include <Cell.h>
 #include <Events.hpp>
@@ -10,6 +11,13 @@ namespace Handle{
     void windowEvent(const SDL_WindowEvent& window){
         switch(window.event){
             case SDL_WINDOWEVENT_RESIZED: break;
+        }
+    }
+
+    void click(const SDL_MouseButtonEvent& mouse){
+        switch(mouse.button){
+            case SDL_BUTTON_LEFT: break; // Change cell's state
+            case SDL_BUTTON_MIDDLE: break; // Drag screen
         }
     }
 
@@ -37,7 +45,9 @@ namespace Handle{
         cellH = 1.0f * zoom;
 
         // Horizontal displace
-        if(wheelX) offsetX += static_cast<float>(wheelX * displace);
+        if(wheelX){
+            offsetX += static_cast<float>(wheelX * displace);
+            offsetX = std::clamp(offsetX, -50.0f, 50.0f);
+        }
     }
-
 };

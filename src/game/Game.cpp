@@ -30,7 +30,7 @@ Game::Game():
     population(0),
     shouldStop(SDL_FALSE),
     winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT),
-    cellSize({40.0f, 40.0f}),
+    cellSize({10.0f, 10.0f}),
     THREADS(availableThreads()) {
     // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
@@ -72,7 +72,7 @@ Game::Game():
     }
 
     // Initialize Game attributes
-    this->grid = Grid(200, 200);
+    this->grid = Grid(300, 300);
     this->grid.at({80, 80}).state = ALIVE;
     this->grid.at({81, 80}).state = ALIVE;
     this->grid.at({81, 81}).state = ALIVE;

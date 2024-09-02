@@ -21,7 +21,7 @@ class Game {
         const std::pair<float, float> scale{0.9f, 1.1f};
         std::pair<float, float> offset{0.0f, 0.0f};
         const unsigned int GAP = 1;
-        float zoomFactor = 1.0f;
+        float zoomFactor = 10.0f;
         
         unsigned int population;
         unsigned int generation;

@@ -27,32 +27,36 @@ namespace Handle{
         const auto [scaleDown, scaleUp] = scale;
         const auto [mouseX, mouseY] = Coord{wheel.mouseX, wheel.mouseY};
         const auto [wheelX, wheelY] = Coord{wheel.x, wheel.y};
-        const int displace = -15;
+        const int DISPLACE = -15;
+        const float MAX_SCALE = 100.0f;
+        const float MIN_SCALE = 10.0f;
 
         /* ~~Zoom computation~~ */
         const float gridX = (mouseX - offsetX) / zoom;
         const float gridY = (mouseY - offsetY) / zoom;
 
-        if(wheelY > 0){
+        if(wheelY > 0){ // Zoom-in
             zoom *= scaleUp;
             
             cellW *= scaleUp;
             cellH *= scaleUp;
-        }else if(wheelY < 0){
+        }else if(wheelY < 0){ // Zoom-out
             zoom *= scaleDown;
 
             cellW *= scaleDown;
             cellH *= scaleDown;
         }
 
+        // Handle scale boudaries
+        zoom = std::clamp(zoom, MIN_SCALE, MAX_SCALE);
+        cellW = std::clamp(cellW, MIN_SCALE, MAX_SCALE); 
+        cellH = std::clamp(cellH, MIN_SCALE, MAX_SCALE); 
+
         // New offset
         offsetX = mouseX - gridX * zoom;
         offsetY = mouseY - gridY * zoom;
 
         // Horizontal displace
-        if(wheelX){
-            offsetX += static_cast<float>(wheelX * displace);
-            offsetX = std::clamp(offsetX, -50.0f, 50.0f);
-        }
+        if(wheelX) offsetX += static_cast<float>(wheelX * DISPLACE);
     }
 };

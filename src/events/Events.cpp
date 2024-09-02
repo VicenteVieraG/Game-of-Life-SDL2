@@ -33,16 +33,21 @@ namespace Handle{
         const float gridX = (mouseX - offsetX) / zoom;
         const float gridY = (mouseY - offsetY) / zoom;
 
-        if(wheelY > 0) zoom *= scaleUp;
-        if(wheelY < 0) zoom *= scaleDown;
+        if(wheelY > 0){
+            zoom *= scaleUp;
+            
+            cellW *= scaleUp;
+            cellH *= scaleUp;
+        }else if(wheelY < 0){
+            zoom *= scaleDown;
+
+            cellW *= scaleDown;
+            cellH *= scaleDown;
+        }
 
         // New offset
         offsetX = mouseX - gridX * zoom;
         offsetY = mouseY - gridY * zoom;
-
-        // Scale cells' size
-        cellW = 1.0f * zoom;
-        cellH = 1.0f * zoom;
 
         // Horizontal displace
         if(wheelX){

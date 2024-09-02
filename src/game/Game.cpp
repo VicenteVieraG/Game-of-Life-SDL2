@@ -30,7 +30,7 @@ Game::Game():
     population(0),
     shouldStop(SDL_FALSE),
     winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT),
-    cellSize({1.0f, 1.0f}),
+    cellSize({40.0f, 40.0f}),
     THREADS(availableThreads()) {
     // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0){

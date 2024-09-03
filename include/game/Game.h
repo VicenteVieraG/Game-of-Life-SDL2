@@ -7,12 +7,14 @@
 
 #include <Grid.h>
 #include <Cell.h>
+#include <Events.hpp>
 
 class Game {
     private:
         SDL_Window* Window;
         SDL_Renderer* Renderer;
         SDL_bool shouldStop;
+        Handle Handle;
         const unsigned int WINDOW_WIDTH = 640;
         const unsigned int WINDOW_HEIGHT = 480;
 

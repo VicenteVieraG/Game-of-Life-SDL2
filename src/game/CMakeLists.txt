@@ -9,7 +9,7 @@ find_package(imgui CONFIG
 )
 target_link_libraries(${GAME}
     PUBLIC ${GRID}
-    PRIVATE ${EVENTS}
+    PUBLIC ${EVENTS}
     PUBLIC ${COLORS}
     PUBLIC SDL2::SDL2
     PUBLIC imgui::imgui

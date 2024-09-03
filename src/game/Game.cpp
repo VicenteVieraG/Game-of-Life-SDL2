@@ -31,7 +31,8 @@ Game::Game():
     shouldStop(SDL_FALSE),
     winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT),
     cellSize({10.0f, 10.0f}),
-    THREADS(availableThreads()) {
+    THREADS(availableThreads()),
+    Handle(this->shouldStop, this->zoomFactor, this->scale, this->offset, this->cellSize) {
     // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cerr<<"-- Error initializing SDL"<<std::endl;
@@ -167,11 +168,12 @@ void Game::start(){
         while(SDL_PollEvent(&e)){
             const auto& [window, mouseBtn, motion, wheel] = Events{e.window, e.button, e.motion, e.wheel};
             switch(e.type){
-                case SDL_QUIT:              Handle::stop(this->shouldStop); break;
-                case SDL_WINDOWEVENT:       Handle::windowEvent(window); break;
-                case SDL_MOUSEBUTTONDOWN:   Handle::click(mouseBtn); break;
-                case SDL_MOUSEBUTTONUP:     break;
-                case SDL_MOUSEWHEEL:        Handle::wheel(wheel, this->scale, this->offset, this->cellSize, this->zoomFactor); break;
+                case SDL_QUIT:              this->Handle.stop(); break;
+                case SDL_WINDOWEVENT:       this->Handle.windowEvent(window); break;
+                case SDL_MOUSEBUTTONDOWN:   this->Handle.click(mouseBtn); break;
+                case SDL_MOUSEBUTTONUP:     this->Handle.clickRelease(mouseBtn); break;
+                case SDL_MOUSEMOTION:       this->Handle.motion(motion); break;
+                case SDL_MOUSEWHEEL:        this->Handle.wheel(wheel); break;
                 default: break;
             }
         }

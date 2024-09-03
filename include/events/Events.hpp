@@ -10,9 +10,23 @@ struct Events {
     const SDL_MouseWheelEvent wheel;
 };
 
-namespace Handle{
-    void stop(SDL_bool& shouldStop);
-    void windowEvent(const SDL_WindowEvent& window);
-    void click(const SDL_MouseButtonEvent& button);
-    void wheel(const SDL_MouseWheelEvent wheel, const std::pair<float, float> scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize, float& zoom);
+class Handle{
+    private:
+        SDL_bool& shouldStop;
+        bool dragging = false;
+        float& zoom;
+        const std::pair<float, float>& scale;
+        std::pair<float, float>& offset;
+        std::pair<float, float>& cellSize;
+    public:
+        Handle() = default;
+        Handle(SDL_bool& shouldStop, float& zoom, const std::pair<float, float>& scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize): shouldStop(shouldStop), zoom(zoom), scale(scale), offset(offset), cellSize(cellSize){};
+        ~Handle() = default;
+
+        void stop();
+        void windowEvent(const SDL_WindowEvent& window);
+        void click(const SDL_MouseButtonEvent& mouse);
+        void clickRelease(const SDL_MouseButtonEvent& mouse);
+        void motion(const SDL_MouseMotionEvent& motion);
+        void wheel(const SDL_MouseWheelEvent wheel);
 };

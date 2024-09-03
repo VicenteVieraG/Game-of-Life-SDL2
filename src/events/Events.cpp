@@ -5,60 +5,75 @@
 #include <Events.hpp>
 #include <SDL2/SDL.h>
 
-namespace Handle{
-    void stop(SDL_bool& shouldStop){shouldStop = SDL_TRUE;}
+void Handle::stop(){this->shouldStop = SDL_TRUE;}
 
-    void windowEvent(const SDL_WindowEvent& window){
-        switch(window.event){
-            case SDL_WINDOWEVENT_RESIZED: break;
-        }
+void Handle::windowEvent(const SDL_WindowEvent& window){
+    switch(window.event){
+        case SDL_WINDOWEVENT_RESIZED: break;
+    }
+}
+
+void Handle::click(const SDL_MouseButtonEvent& mouse){
+    switch(mouse.button){
+        case SDL_BUTTON_MIDDLE:
+        case SDL_BUTTON_RIGHT: this->dragging = true; break;
+        default: break;
+    }
+}
+
+void Handle::clickRelease(const SDL_MouseButtonEvent& mouse){
+    switch(mouse.button){
+        case SDL_BUTTON_MIDDLE:
+        case SDL_BUTTON_RIGHT: this->dragging = false; break;
+        default: break;
+    }
+}
+
+void Handle::motion(const SDL_MouseMotionEvent& motion){
+    const auto [motionX, motionY] = Coord{motion.xrel, motion.yrel};
+    auto& [offsetX, offsetY] = this->offset;
+
+    if(this->dragging){
+        offsetX += motionX;
+        offsetY += motionY;
+    }
+}
+
+void Handle::wheel(const SDL_MouseWheelEvent wheel){
+    auto& [offsetX, offsetY] = this->offset;
+    auto& [cellW, cellH] = this->cellSize;
+    const auto [scaleDown, scaleUp] = this->scale;
+    const auto [mouseX, mouseY] = Coord{wheel.mouseX, wheel.mouseY};
+    const auto [wheelX, wheelY] = Coord{wheel.x, wheel.y};
+    const int DISPLACE = -15;
+    const float MAX_SCALE = 100.0f;
+    const float MIN_SCALE = 10.0f;
+
+    /* ~~Zoom computation~~ */
+    const float gridX = (mouseX - offsetX) / this->zoom;
+    const float gridY = (mouseY - offsetY) / this->zoom;
+
+    if(wheelY > 0){ // Zoom-in
+        this->zoom *= scaleUp;
+        
+        cellW *= scaleUp;
+        cellH *= scaleUp;
+    }else if(wheelY < 0){ // Zoom-out
+        this->zoom *= scaleDown;
+
+        cellW *= scaleDown;
+        cellH *= scaleDown;
     }
 
-    void click(const SDL_MouseButtonEvent& button){
-        static bool dragging = false;
+    // Handle scale boudaries
+    this->zoom = std::clamp(this->zoom, MIN_SCALE, MAX_SCALE);
+    cellW = std::clamp(cellW, MIN_SCALE, MAX_SCALE); 
+    cellH = std::clamp(cellH, MIN_SCALE, MAX_SCALE); 
 
-        switch(button.type){
-            case SDL_MOUSEBUTTONDOWN: dragging = true; std::cout<<button.type<<std::endl; break;
-            case SDL_MOUSEBUTTONUP: dragging = false; std::cout<<button.type<<std::endl; break;
-        }
-    }
+    // New offset
+    offsetX = mouseX - gridX * this->zoom;
+    offsetY = mouseY - gridY * this->zoom;
 
-    void wheel(const SDL_MouseWheelEvent wheel, const std::pair<float, float> scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize, float& zoom){
-        auto& [offsetX, offsetY] = offset;
-        auto& [cellW, cellH] = cellSize;
-        const auto [scaleDown, scaleUp] = scale;
-        const auto [mouseX, mouseY] = Coord{wheel.mouseX, wheel.mouseY};
-        const auto [wheelX, wheelY] = Coord{wheel.x, wheel.y};
-        const int DISPLACE = -15;
-        const float MAX_SCALE = 100.0f;
-        const float MIN_SCALE = 10.0f;
-
-        /* ~~Zoom computation~~ */
-        const float gridX = (mouseX - offsetX) / zoom;
-        const float gridY = (mouseY - offsetY) / zoom;
-
-        if(wheelY > 0){ // Zoom-in
-            zoom *= scaleUp;
-            
-            cellW *= scaleUp;
-            cellH *= scaleUp;
-        }else if(wheelY < 0){ // Zoom-out
-            zoom *= scaleDown;
-
-            cellW *= scaleDown;
-            cellH *= scaleDown;
-        }
-
-        // Handle scale boudaries
-        zoom = std::clamp(zoom, MIN_SCALE, MAX_SCALE);
-        cellW = std::clamp(cellW, MIN_SCALE, MAX_SCALE); 
-        cellH = std::clamp(cellH, MIN_SCALE, MAX_SCALE); 
-
-        // New offset
-        offsetX = mouseX - gridX * zoom;
-        offsetY = mouseY - gridY * zoom;
-
-        // Horizontal displace
-        if(wheelX) offsetX += static_cast<float>(wheelX * DISPLACE);
-    }
-};
+    // Horizontal displace
+    if(wheelX) offsetX += static_cast<float>(wheelX * DISPLACE);
+}

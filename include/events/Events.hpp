@@ -1,4 +1,5 @@
 #pragma once
+#include <Grid.h>
 
 #include <utility>
 #include <SDL2/SDL.h>
@@ -15,12 +16,16 @@ class Handle{
         SDL_bool& shouldStop;
         bool dragging = false;
         float& zoom;
+
+        Grid& grid;
+
+        const unsigned int GAP;
         const std::pair<float, float>& scale;
         std::pair<float, float>& offset;
         std::pair<float, float>& cellSize;
     public:
         Handle() = default;
-        Handle(SDL_bool& shouldStop, float& zoom, const std::pair<float, float>& scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize): shouldStop(shouldStop), zoom(zoom), scale(scale), offset(offset), cellSize(cellSize){};
+        Handle(SDL_bool& shouldStop, float& zoom, const unsigned int GAP, Grid& grid, const std::pair<float, float>& scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize): shouldStop(shouldStop), zoom(zoom), scale(scale), GAP(GAP), grid(grid), offset(offset), cellSize(cellSize){};
         ~Handle() = default;
 
         void stop();

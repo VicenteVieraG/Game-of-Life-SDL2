@@ -9,13 +9,7 @@
 void Cell::setNewState() {
     switch(this->neighbors){
         case 2:
-        case 3:
-            if(this->neighbors == 3) this->state = ALIVE;
-            break;
-        default:
-            this->state = DEAD;
-            break;
+        case 3: if(this->neighbors == 3) this->state = ALIVE; break;
+        default: this->state = DEAD; break;
     }
-
-    return;
 }

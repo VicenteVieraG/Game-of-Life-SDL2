@@ -20,6 +20,17 @@ struct Coord {
     }
 };
 
+struct FCoord {
+    float x = 0.0f;
+    float y = 0.0f;
+    auto operator<=>(const FCoord&) const = default;
+    friend std::ostream& operator<<(std::ostream& os, const FCoord& coord){
+        const auto [x, y] = coord;
+        os<<"<"<<x<<", "<<y<<">";
+        return os;
+    }
+};
+
 // Directions unit vectors for Coords
 const Coord RIGHT = {1, 0};
 const Coord LEFT = {-1, 0};

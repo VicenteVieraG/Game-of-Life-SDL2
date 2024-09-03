@@ -32,8 +32,8 @@ Game::Game():
     winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT),
     cellSize({10.0f, 10.0f}),
     THREADS(availableThreads()),
-    Handle(this->shouldStop, this->zoomFactor, this->scale, this->offset, this->cellSize) {
-    // Initialize SDL
+    Handle(this->shouldStop, this->zoomFactor, this->GAP, this->grid, this->scale, this->offset, this->cellSize) {
+    /* ~~Initialize SDL~~ */
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cerr<<"-- Error initializing SDL"<<std::endl;
         std::cout<<"-- SDL Error: "<<SDL_GetError()<<std::endl;
@@ -72,14 +72,9 @@ Game::Game():
         std::exit(-1);
     }
 
-    // Initialize Game attributes
+    /* ~~Initialize game attributes~~ */
     this->grid = Grid(300, 300);
-    this->grid.at({80, 80}).state = ALIVE;
-    this->grid.at({81, 80}).state = ALIVE;
-    this->grid.at({81, 81}).state = ALIVE;
-    this->grid.at({82, 81}).state = ALIVE;
-    this->grid.at({81, 82}).state = ALIVE;
-
+    
     for(int i = 0;i < this->grid.rows;i++){
         for(int j = 0;j < this->grid.cols;j++) this->cells.emplace_back(&this->grid.at({j, i}));
     }
@@ -100,7 +95,6 @@ Game::Game():
     }
 }
 
-// Complexity: O()
 void Game::nextState(){
     std::vector<std::thread> threads;
     Grid isoGrid = this->grid;
@@ -163,7 +157,7 @@ void Game::start(){
     /* ~~Rendering loop~~ */
     SDL_bool runSimulation = SDL_FALSE;
     do{
-        // Manage events
+        /* ~~Mannage events~~ */
         SDL_Event e;
         while(SDL_PollEvent(&e)){
             const auto& [window, mouseBtn, motion, wheel] = Events{e.window, e.button, e.motion, e.wheel};
@@ -207,11 +201,11 @@ void Game::start(){
 
     // Cleaning objects
     Game::~Game();
-    SDL_Quit();
     return;
 }
 
 Game::~Game(){
     SDL_DestroyRenderer(this->Renderer);
     SDL_DestroyWindow(this->Window);
+    SDL_Quit();
 }

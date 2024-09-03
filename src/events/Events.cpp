@@ -1,5 +1,6 @@
 #include <utility>
 #include <algorithm>
+#include <math.h>
 
 #include <Cell.h>
 #include <Events.hpp>
@@ -17,7 +18,23 @@ void Handle::click(const SDL_MouseButtonEvent& mouse){
     switch(mouse.button){
         case SDL_BUTTON_MIDDLE:
         case SDL_BUTTON_RIGHT: this->dragging = true; break;
-        default: break;
+        case SDL_BUTTON_LEFT:{
+            const auto [cellW, cellH] = this->cellSize;
+            const auto [offsetX, offsetY] = this->offset;
+
+            // Compute grid's relative coord
+            const FCoord gridCoord = {
+                (static_cast<float>(mouse.x) - offsetX) / this->zoom,
+                (static_cast<float>(mouse.y) - offsetY) / this->zoom
+            };
+
+            if(Cell& selectedCell =
+                this->grid.at({static_cast<int>(std::floor(gridCoord.x)), static_cast<int>(std::floor(gridCoord.y))});
+                selectedCell.state == DEAD)
+            {selectedCell.state = ALIVE; std::cout<<selectedCell.coord<<gridCoord<<std::endl;} else
+            {selectedCell.state = DEAD; std::cout<<selectedCell.coord<<gridCoord<<std::endl;}
+        }
+        default: return;
     }
 }
 
@@ -25,7 +42,7 @@ void Handle::clickRelease(const SDL_MouseButtonEvent& mouse){
     switch(mouse.button){
         case SDL_BUTTON_MIDDLE:
         case SDL_BUTTON_RIGHT: this->dragging = false; break;
-        default: break;
+        default: return;
     }
 }
 

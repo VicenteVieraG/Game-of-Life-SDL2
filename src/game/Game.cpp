@@ -165,12 +165,14 @@ void Game::start(){
         // Manage events
         SDL_Event e;
         while(SDL_PollEvent(&e)){
-            const auto& [window, mouseBtn, wheel] = Events{e.window, e.button, e.wheel};
+            const auto& [window, mouseBtn, motion, wheel] = Events{e.window, e.button, e.motion, e.wheel};
             switch(e.type){
                 case SDL_QUIT:              Handle::stop(this->shouldStop); break;
                 case SDL_WINDOWEVENT:       Handle::windowEvent(window); break;
                 case SDL_MOUSEBUTTONDOWN:   Handle::click(mouseBtn); break;
+                case SDL_MOUSEBUTTONUP:     break;
                 case SDL_MOUSEWHEEL:        Handle::wheel(wheel, this->scale, this->offset, this->cellSize, this->zoomFactor); break;
+                default: break;
             }
         }
 

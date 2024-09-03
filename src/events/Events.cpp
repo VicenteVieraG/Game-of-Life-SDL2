@@ -14,10 +14,12 @@ namespace Handle{
         }
     }
 
-    void click(const SDL_MouseButtonEvent& mouse){
-        switch(mouse.button){
-            case SDL_BUTTON_LEFT: break; // Change cell's state
-            case SDL_BUTTON_MIDDLE: break; // Drag screen
+    void click(const SDL_MouseButtonEvent& button){
+        static bool dragging = false;
+
+        switch(button.type){
+            case SDL_MOUSEBUTTONDOWN: dragging = true; std::cout<<button.type<<std::endl; break;
+            case SDL_MOUSEBUTTONUP: dragging = false; std::cout<<button.type<<std::endl; break;
         }
     }
 

@@ -130,18 +130,18 @@ void Game::renderGrid() const {
             const auto& [width, height] = this->cellSize;
             const auto& [offsetW, offsetH] = this->offset;
 
-            const SDL_FRect SQUARE = {
-                offsetW + x * (width + this->GAP),
-                offsetH + y * (height + this->GAP),
-                width,
-                height
+            const SDL_FRect CELL = {
+                offsetW + x * width,
+                offsetH + y * height,
+                width - (width / this->zoomFactor),
+                height - (height / this->zoomFactor)
             };
-            
+
             this->grid.at(current).state ?
                 SDL_SetRenderDrawColor(this->Renderer, WHITE)
                     :
                 SDL_SetRenderDrawColor(this->Renderer, BLACK);
-            SDL_RenderFillRectF(this->Renderer, &SQUARE);
+            SDL_RenderFillRectF(this->Renderer, &CELL);
         }
     }
 }

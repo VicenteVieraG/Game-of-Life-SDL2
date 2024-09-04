@@ -27,19 +27,8 @@ void Handle::click(const SDL_MouseButtonEvent& mouse){
                 (static_cast<float>(mouse.y) - offsetY) / this->zoom
             };
 
-            // Compensate the accumulated gap displacement
-            // const FCoord accumulated = {
-            //     gridCoord.x / this->zoom,
-            //     gridCoord.y / this->zoom
-            // };
-            // std::cout<<gridCoord<<std::endl;
-            // std::cout<<accumulated<<std::endl;
-            // gridCoord - accumulated;
-            // std::cout<<"______________\n";
-            // std::cout<<gridCoord<<std::endl;
-
             if(Cell& selectedCell =
-                this->grid.at({static_cast<int>(std::floor(gridCoord.x)), static_cast<int>(std::floor(gridCoord.y))});
+                this->grid.at({static_cast<int>(std::floorf(gridCoord.x)), static_cast<int>(std::floorf(gridCoord.y))});
                 selectedCell.state == DEAD)
             {selectedCell.state = ALIVE;} else
             {selectedCell.state = DEAD;}

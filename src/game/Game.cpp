@@ -131,8 +131,8 @@ void Game::renderGrid() const {
             const auto& [offsetW, offsetH] = this->offset;
 
             const SDL_FRect SQUARE = {
-                x + this->GAP + offsetW + width * x,
-                y + this->GAP + offsetH + height * y,
+                offsetW + x * (width + this->GAP),
+                offsetH + y * (height + this->GAP),
                 width,
                 height
             };

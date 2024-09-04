@@ -19,7 +19,6 @@ void Handle::click(const SDL_MouseButtonEvent& mouse){
         case SDL_BUTTON_MIDDLE:
         case SDL_BUTTON_RIGHT: this->dragging = true; break;
         case SDL_BUTTON_LEFT:{
-            const auto [cellW, cellH] = this->cellSize;
             const auto [offsetX, offsetY] = this->offset;
 
             // Compute grid's relative coord
@@ -29,15 +28,15 @@ void Handle::click(const SDL_MouseButtonEvent& mouse){
             };
 
             // Compensate the accumulated gap displacement
-            const FCoord accumulated = {
-                std::floor(gridCoord.x) * this->GAP / this->zoom,
-                std::floor(gridCoord.y) * this->GAP / this->zoom
-            };
-            std::cout<<gridCoord<<std::endl;
-            std::cout<<accumulated<<std::endl;
-            gridCoord - accumulated;
-            std::cout<<"______________\n";
-            std::cout<<gridCoord<<std::endl;
+            // const FCoord accumulated = {
+            //     gridCoord.x / this->zoom,
+            //     gridCoord.y / this->zoom
+            // };
+            // std::cout<<gridCoord<<std::endl;
+            // std::cout<<accumulated<<std::endl;
+            // gridCoord - accumulated;
+            // std::cout<<"______________\n";
+            // std::cout<<gridCoord<<std::endl;
 
             if(Cell& selectedCell =
                 this->grid.at({static_cast<int>(std::floor(gridCoord.x)), static_cast<int>(std::floor(gridCoord.y))});

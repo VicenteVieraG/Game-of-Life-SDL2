@@ -29,6 +29,20 @@ struct FCoord {
         os<<"<"<<x<<", "<<y<<">";
         return os;
     }
+    // Coord-scalar operations
+    auto operator+(const float& other){
+        this->x += other;
+        this->y += other;
+    }
+    auto operator-(const float& other){
+        this->x -= other;
+        this->y -= other;
+    }
+    // Coord operations
+    auto operator-(const FCoord& other){
+        this->x -= other.x;
+        this->y -= other.y;
+    }
 };
 
 // Directions unit vectors for Coords

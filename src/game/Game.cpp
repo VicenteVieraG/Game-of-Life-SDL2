@@ -131,12 +131,12 @@ void Game::renderGrid() const {
             const auto& [offsetW, offsetH] = this->offset;
 
             const SDL_FRect SQUARE = {
-                x + this->GAP + offsetW + (width * x),
-                y + this->GAP + offsetH + (height * y),
+                x + this->GAP + offsetW + width * x,
+                y + this->GAP + offsetH + height * y,
                 width,
                 height
             };
-
+            
             this->grid.at(current).state ?
                 SDL_SetRenderDrawColor(this->Renderer, WHITE)
                     :

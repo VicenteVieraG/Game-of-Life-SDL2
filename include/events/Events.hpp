@@ -19,13 +19,13 @@ class Handle{
 
         Grid& grid;
 
-        const unsigned int GAP;
+        const unsigned int& GAP;
         const std::pair<float, float>& scale;
         std::pair<float, float>& offset;
         std::pair<float, float>& cellSize;
     public:
         Handle() = default;
-        Handle(SDL_bool& shouldStop, float& zoom, const unsigned int GAP, Grid& grid, const std::pair<float, float>& scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize): shouldStop(shouldStop), zoom(zoom), scale(scale), GAP(GAP), grid(grid), offset(offset), cellSize(cellSize){};
+        Handle(SDL_bool& shouldStop, float& zoom, const unsigned int& GAP, Grid& grid, const std::pair<float, float>& scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize): shouldStop(shouldStop), zoom(zoom), scale(scale), GAP(GAP), grid(grid), offset(offset), cellSize(cellSize){};
         ~Handle() = default;
 
         void stop();

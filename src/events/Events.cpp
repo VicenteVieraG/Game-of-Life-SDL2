@@ -45,6 +45,13 @@ void Handle::clickRelease(const SDL_MouseButtonEvent& mouse){
     }
 }
 
+void Handle::keyPress(const SDL_KeyboardEvent& key, bool* test){
+    switch(key.keysym.sym){
+        case SDLK_SPACE: *this->simState = !(*this->simState); break;
+        default: return;
+    }
+}
+
 void Handle::motion(const SDL_MouseMotionEvent& motion){
     const auto [motionX, motionY] = Coord{motion.xrel, motion.yrel};
     auto& [offsetX, offsetY] = this->offset;

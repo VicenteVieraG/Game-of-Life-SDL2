@@ -7,6 +7,7 @@
 struct Events {
     const SDL_WindowEvent window;
     const SDL_MouseButtonEvent mouseBtn;
+    const SDL_KeyboardEvent keyPress;
     const SDL_MouseMotionEvent motion;
     const SDL_MouseWheelEvent wheel;
 };
@@ -14,6 +15,7 @@ struct Events {
 class Handle{
     private:
         SDL_bool& shouldStop;
+        bool* simState = nullptr;
         bool dragging = false;
         float& zoom;
 
@@ -23,15 +25,25 @@ class Handle{
         const std::pair<float, float>& scale;
         std::pair<float, float>& offset;
         std::pair<float, float>& cellSize;
+
     public:
         Handle() = default;
-        Handle(SDL_bool& shouldStop, float& zoom, const unsigned int& GAP, Grid& grid, const std::pair<float, float>& scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize): shouldStop(shouldStop), zoom(zoom), scale(scale), GAP(GAP), grid(grid), offset(offset), cellSize(cellSize){};
+        Handle(SDL_bool& shouldStop, bool* simState, float& zoom, const unsigned int& GAP, Grid& grid, const std::pair<float, float>& scale, std::pair<float, float>& offset, std::pair<float, float>& cellSize):
+            shouldStop(shouldStop),
+            simState(simState),
+            zoom(zoom),
+            scale(scale),
+            GAP(GAP),
+            grid(grid),
+            offset(offset),
+            cellSize(cellSize){};
         ~Handle() = default;
 
         void stop();
         void windowEvent(const SDL_WindowEvent& window);
         void click(const SDL_MouseButtonEvent& mouse);
         void clickRelease(const SDL_MouseButtonEvent& mouse);
+        void keyPress(const SDL_KeyboardEvent& key, bool*);
         void motion(const SDL_MouseMotionEvent& motion);
         void wheel(const SDL_MouseWheelEvent wheel);
 };

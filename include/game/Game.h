@@ -14,6 +14,7 @@ class Game {
         SDL_Window* Window;
         SDL_Renderer* Renderer;
         SDL_bool shouldStop;
+        bool simulationState;
         Handle Handle;
         const unsigned int WINDOW_WIDTH = 640;
         const unsigned int WINDOW_HEIGHT = 480;

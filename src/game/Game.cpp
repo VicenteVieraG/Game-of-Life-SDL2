@@ -31,8 +31,9 @@ Game::Game():
     shouldStop(SDL_FALSE),
     winSize(this->WINDOW_WIDTH, this->WINDOW_HEIGHT),
     cellSize({10.0f, 10.0f}),
+    simulationState(false),
     THREADS(availableThreads()),
-    Handle(this->shouldStop, this->zoomFactor, this->GAP, this->grid, this->scale, this->offset, this->cellSize) {
+    Handle(this->shouldStop, &this->simulationState, this->zoomFactor, this->GAP, this->grid, this->scale, this->offset, this->cellSize) {
     /* ~~Initialize SDL~~ */
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cerr<<"-- Error initializing SDL"<<std::endl;
@@ -155,12 +156,11 @@ void Game::start(){
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
     /* ~~Rendering loop~~ */
-    SDL_bool runSimulation = SDL_FALSE;
     do{
         /* ~~Mannage events~~ */
         SDL_Event e;
         while(SDL_PollEvent(&e)){
-            const auto& [window, mouseBtn, motion, wheel] = Events{e.window, e.button, e.motion, e.wheel};
+            const auto& [window, mouseBtn, key, motion, wheel] = Events{e.window, e.button, e.key, e.motion, e.wheel};
             switch(e.type){
                 case SDL_QUIT:              this->Handle.stop(); break;
                 case SDL_WINDOWEVENT:       this->Handle.windowEvent(window); break;
@@ -168,6 +168,7 @@ void Game::start(){
                 case SDL_MOUSEBUTTONUP:     this->Handle.clickRelease(mouseBtn); break;
                 case SDL_MOUSEMOTION:       this->Handle.motion(motion); break;
                 case SDL_MOUSEWHEEL:        this->Handle.wheel(wheel); break;
+                case SDL_KEYDOWN:           this->Handle.keyPress(key, &this->simulationState); break;
                 default: break;
             }
         }
@@ -178,7 +179,7 @@ void Game::start(){
         SDL_RenderClear(this->Renderer);
 
         // Render menu
-        if(runSimulation) this->nextState();
+        if(this->simulationState) this->nextState();
         this->renderGrid();
         
         SDL_RenderPresent(this->Renderer);

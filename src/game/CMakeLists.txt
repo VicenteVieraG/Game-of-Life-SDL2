@@ -5,5 +5,4 @@ target_link_libraries(${GAME}
     PUBLIC ${EVENTS}
     PUBLIC ${COLORS}
     PUBLIC ${sdl2}
-    PUBLIC ${imgui}
 )

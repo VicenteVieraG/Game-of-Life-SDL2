@@ -15,6 +15,12 @@ set(GAME game)
 set(COLORS colors)
 set(EVENTS events)
 # External
+find_package(SDL2 CONFIG REQUIRED)
+if(SDL2_FOUND)
+    message(STATUS "SDL2 found")
+else()
+    message(FATAL_ERROR "SDL2 not found")
+endif()
 set(sdl2 SDL2)
 set(imgui ImGUI)
 

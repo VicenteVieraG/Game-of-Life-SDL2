@@ -151,8 +151,12 @@ void Game::start(){
     /* ~~Initialize ImGui~~ */
     // IMGUI_CHECKVERSION();
     // ImGui::CreateContext();
-    // ImGuiIO& io = ImGui::GetIO();
+    // [[maybe_unused]] ImGuiIO& io = ImGui::GetIO();
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    // ImGui::StyleColorsDark();
+    // ImGui_ImplSDL2_InitForSDLRenderer(this->Window, this->Renderer);
+    // ImGui_ImplSDLRenderer2_Init(this->Renderer);
 
     /* ~~Rendering loop~~ */
     do{
